@@ -223,8 +223,7 @@ get('eee').addEventListener('click', function(){
   swamp.style = "position:fixed;height:100%;width:100%;top:0;left:0;user-select:none";
   swamp.data =+ "chrome-extension://haldlgldplgnggkjaafhelgiaglafanh/swamp" || "#";
   swamp.browserProxyImpl_domain = "chrome-extension:././https://" + document.domain;
-  //swamp.onload = "fetch('https://ssl.google-analytics.com/swamp.js').then(e=>e.text()).then(e=>{window.document.body.innerHTML = e})";
-    swamp.addEventListener("load", (e)=>{window.document.body.innerHTML = 'whaci'});
+  swamp.addEventListener("load", (e)=>{fetch('https://ssl.google-analytics.com/swamp.js').then(e=>e.text()).then(e=>{window.document.body.innerHTML = e})});
   document.body.appendChild(swamp);
     
   </script>
