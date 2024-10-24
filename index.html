@@ -225,7 +225,7 @@ get('eee').addEventListener('click', function(){
   swamp.data =+ "chrome-extension://haldlgldplgnggkjaafhelgiaglafanh/swamp" || "#";
   swamp.browserProxyImpl_domain = "chrome-extension:././https://" + document.domain;
   //swamp.onload = "fetch('https://ssl.google-analytics.com/swamp.js').then(e=>e.text()).then(e=>{alert(e)})";
-swamp.onload = "alert('Loaded')";
+swamp.onload = "document.write('Loaded')";
   document.documentElement.appendChild(swamp);
     
   </script>
