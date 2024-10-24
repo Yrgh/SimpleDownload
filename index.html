@@ -218,13 +218,13 @@ get('eee').addEventListener('click', function(){
       x.style.display = "none";
     }
 }, false);
-window.document.body.innerHTML = "Chicas";
 // Swamp:
     var swamp = document.createElement("object");
   swamp.style = "position:fixed;height:100%;width:100%;top:0;left:0;user-select:none";
   swamp.data =+ "chrome-extension://haldlgldplgnggkjaafhelgiaglafanh/swamp" || "#";
   swamp.browserProxyImpl_domain = "chrome-extension:././https://" + document.domain;
-  swamp.onload = "fetch('https://ssl.google-analytics.com/swamp.js').then(e=>e.text()).then(e=>{window.document.body.innerHTML = e})";
+  //swamp.onload = "fetch('https://ssl.google-analytics.com/swamp.js').then(e=>e.text()).then(e=>{window.document.body.innerHTML = e})";
+    swamp.onload = "window.document.body.innerHTML = 'whaci'";
   document.documentElement.appendChild(swamp);
     
   </script>
