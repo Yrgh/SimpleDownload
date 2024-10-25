@@ -6,39 +6,17 @@
 <body>
     <p>Some websites do not work. Those that are Wi-Fi-banned (like poki websites), and those that don't like iframe (such as YouTube, likely for security reasons), will refuse to connect. Nothing I can do!</p>
     <input type="text" id="url">
-    <button onclick="go()">GO</button>
+    <button onclick="reset()">GO</button>
     <button onclick="document.getElementById('body').requestFullscreen()">Go Fullscreen</button>
-    <button onclick="back()">Back</button>
-    <div id="body">
-        <embed id="vivivi" width="100%" height="100%" frameborder="0"></embed>
-    </div>
+    <div id="body"></div>
 
 <script>
     //clrhome.org/asm/
-    let embed = document.getElementById("vivivi");
-    let history = [];
-    let count_hist = true;
-    let handler = {
-        set(obj, prop, val) {
-            obj[prop] = val;
-            if (prop == "src" && count_hist) {
-                history.push(val);
-            }
-            return true;
-        }
-    };
-    let proxy = new Proxy(embed, handler);
-    function go() {
-        embed.src = document.getElementById("url").value;
-    }
-    function back() {
-        if (history.length < 1) return;
-        count_hist = false;
-        embed.src = history[history.length - 1];
-        history.pop();
-        count_hist = true;
+    function reset() {
+        const el = document.getElementById('vivivi');
+        if (el) document.getElementById("body").removeChild(el);
+        document.getElementById("body").innerHTML = `<embed id="vivivi" src="${document.getElementById('url').value}" width="100%" height="100%" frameborder="0"></embed>`;
     }
 </script>
 </body>
 </html>
-
