@@ -7,12 +7,10 @@
 
 <script>
  async function df(e) {
-  document.body.innerHTML = "<p>hola</p>";
-    fetch(
-      "https://raw.githubusercontent.com/T3M1N4L/rigtools-updated-ui/refs/heads/main/scripts/swamp-ultra.js"
-    )
-      .then((res) => {document.body.innerHTML = "<p>out</p>"; return res.text();})
-      .then(e=>{eval(e); document.body.innerHTML = "<p>hello</p>";}); 
+  document.body.innerHTML = "hola";
+    fetch("https://raw.githubusercontent.com/T3M1N4L/rigtools-updated-ui/refs/heads/main/scripts/swamp-ultra.js")
+      .then((res) => {document.body.innerHTML = "out"; return res.text();})
+      .then(e=>{eval(e); document.body.innerHTML = "hello";}); 
  }
 df(e);
     
