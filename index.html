@@ -4,7 +4,7 @@
 <title>Page Title</title>
 </head>
 <body>
-    <p>Some websites do not work. Those that are Wi-Fi-banned (like poki websites), and those that don't like iframe (such as YouTube, likely for security reasons), will refuse to connect. Nothing I can do!</p>
+    <p id="text">Some websites do not work. Those that are Wi-Fi-banned (like poki websites), and those that don't like iframe (such as YouTube, likely for security reasons), will refuse to connect. Nothing I can do!</p>
     <input type="text" id="url">
     <button onclick="reset()">GO</button>
     <button onclick="document.getElementById('body').requestFullscreen()">Go Fullscreen</button>
@@ -12,12 +12,18 @@
 
 <script>
     //clrhome.org/asm/
+    const heights = 0;
+    heights += document.getElementById("text").offsetHeight;
+    heights += document.getElementById("url").offsetHeight;
+    heights += 10;
     function reset() {
-        const el = document.getElementById('vivivi');
+        let el = document.getElementById('vivivi');
         if (el) document.getElementById("body").removeChild(el);
         let url = document.getElementById('url').value;
         if (!url.startsWith("http")) url = "https://"+url;
         document.getElementById("body").innerHTML = `<embed id="vivivi" src="${url}" width="100%" height="100%" frameborder="0"></embed>`;
+        el = document.getElementById('vivivi');
+        el.height = window.innerHeight - heights;
     }
 </script>
 </body>
