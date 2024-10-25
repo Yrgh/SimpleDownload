@@ -9,10 +9,11 @@
     <button onclick="document.getElementById('vivivi').requestFullscreen()">Go Fullscreen</button>
 
 <script>
+    //clrhome.org/asm/
     function reset() {
         const el = document.getElementById('vivivi');
         if (el) document.body.removeChild(el);
-        document.body.innerHTML = `<embed id="vivivi" src="https://clrhome.org/asm/" width="100%" height="100%" frameborder="0"></embed>`;
+        document.body.innerHTML = `<embed id="vivivi" src="https://${document.getElementById('url').value}" width="100%" height="100%" frameborder="0"></embed>`;
     }
 </script>
 </body>
