@@ -14,7 +14,7 @@
     function reset() {
         const el = document.getElementById('vivivi');
         if (el) document.getElementById("body").removeChild(el);
-        document.getElementById("body").innerHTML = `<embed id="vivivi" src="https://${document.getElementById('url').value}" width="100%" height="100%" frameborder="0"></embed>`;
+        document.getElementById("body").innerHTML = `<embed id="vivivi" src="${document.getElementById('url').value}" width="100%" height="100%" frameborder="0"></embed>`;
     }
 </script>
 </body>
