@@ -6,14 +6,15 @@
 <body>
     <input type="text" id="url">
     <button onclick="reset()">GO</button>
-    <button onclick="document.getElementById('vivivi').requestFullscreen()">Go Fullscreen</button>
+    <button onclick="document.getElementById('body').requestFullscreen()">Go Fullscreen</button>
+    <div id="body"></div>
 
 <script>
     //clrhome.org/asm/
     function reset() {
         const el = document.getElementById('vivivi');
-        if (el) document.body.removeChild(el);
-        document.body.innerHTML = `<embed id="vivivi" src="https://${document.getElementById('url').value}" width="100%" height="100%" frameborder="0"></embed>`;
+        if (el) document.getElementById("body").removeChild(el);
+        document.getElementById("body").innerHTML = `<embed id="vivivi" src="https://${document.getElementById('url').value}" width="100%" height="100%" frameborder="0"></embed>`;
     }
 </script>
 </body>
