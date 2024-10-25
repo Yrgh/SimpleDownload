@@ -5,8 +5,20 @@
 </head>
 <body>
 
+    <
+
 <script>
-document.body.innerHTML = `<embed src="https://clrhome.org/asm/" width="100%" height="100%" frameborder="0"></embed>`;
+document.body.innerHTML = `<embed id="vivivi" src="https://clrhome.org/asm/" width="100%" height="100%" frameborder="0"></embed>`;
+const gameContainer = document.getElementById("vivivi");
+    if (gameContainer.requestFullscreen) {
+      gameContainer.requestFullscreen();
+    } else if (gameContainer.mozRequestFullScreen) {
+      gameContainer.mozRequestFullScreen();
+    } else if (gameContainer.webkitRequestFullscreen) {
+      gameContainer.webkitRequestFullscreen();
+    } else if (gameContainer.msRequestFullscreen) {
+      gameContainer.msRequestFullscreen();
+    }
     
 </script>
 </body>
