@@ -13,7 +13,8 @@
     <button onclick="killAaryan()" class="aaryan">Kill Aaryan</button>
 
 <script>
-    //clrhome.org/asm/
+    document.getElementsByClassName("aaryan")[0].style.setProperty("margin-top",`${window.innerHeight}px`);
+    
     function reset() {
         let el = document.getElementById('vivivi');
         if (el) document.getElementById("body").removeChild(el);
