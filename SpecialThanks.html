@@ -135,6 +135,7 @@
 
   // Auto-closing tags
   if (key === "/" && textarea.value[textarea.selectionStart - 1] === "<") {
+    event.preventDefault();
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
 
@@ -142,7 +143,7 @@
     const tagMatch = textarea.value.substring(0, start - 1).match(/<(\w+)(?=[\s>])/);
     if (tagMatch) {
       const tagName = tagMatch[1];
-      const insert = `${tagName}>`;
+      const insert = `/${tagName}>`;
 
       // Insert the closing tag
       textarea.value = textarea.value.substring(0, start) + insert + textarea.value.substring(end);
