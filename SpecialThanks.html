@@ -75,7 +75,6 @@
       flex-grow: 1;
       width: 100%;
       overflow: auto;
-      padding: 20px;
       border-top: 1px solid #ccc;
     }
   </style>
@@ -110,6 +109,50 @@
       doc.close();
     }
   });
+
+  htmlInput.addEventListener("keydown", (event) => {
+  const { key } = event;
+  const textarea = event.target;
+
+  // Auto-indentation on Enter key
+  if (key === "Enter") {
+    event.preventDefault();
+    
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+
+    // Get the current line content for indentation reference
+    const currentLine = textarea.value.substring(0, start).split("\n").pop();
+    const indent = currentLine.match(/^\s*/)[0] || "";
+
+    // Insert a newline with the same indentation
+    const insert = `\n${indent}`;
+    textarea.value = textarea.value.substring(0, start) + insert + textarea.value.substring(end);
+    
+    // Move cursor after indentation
+    textarea.selectionStart = textarea.selectionEnd = start + insert.length;
+  }
+
+  // Auto-closing tags
+  if (key === "/" && textarea.value[textarea.selectionStart - 1] === "<") {
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+
+    // Get last opened tag for closing
+    const tagMatch = textarea.value.substring(0, start - 1).match(/<(\w+)(?=[\s>])/);
+    if (tagMatch) {
+      const tagName = tagMatch[1];
+      const insert = `${tagName}>`;
+
+      // Insert the closing tag
+      textarea.value = textarea.value.substring(0, start) + insert + textarea.value.substring(end);
+      
+      // Move cursor inside the closing tag
+      textarea.selectionStart = textarea.selectionEnd = start + tagName.length + 1;
+    }
+  }
+});
+
 </script>
 
 </body>
