@@ -55,3 +55,50 @@
       width: 100%;
       height: 100%;
       padding: 10px;
+      font-family: monospace;
+      font-size: 16px;
+      resize: none;
+      border: none;
+      outline: none;
+    }
+
+    #output {
+      flex-grow: 1;
+      width: 100%;
+      overflow: auto;
+      padding: 20px;
+      border-top: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+<div id="editor-container">
+  <button id="collapsible">Open HTML Editor</button>
+  <div id="editor-section">
+    <textarea id="htmlInput" placeholder="Type your HTML here..."></textarea>
+  </div>
+  <div id="output">This is where your HTML output will appear.</div>
+</div>
+
+<script>
+  const collapsible = document.getElementById("collapsible");
+  const editorSection = document.getElementById("editor-section");
+  const htmlInput = document.getElementById("htmlInput");
+  const output = document.getElementById("output");
+
+  collapsible.addEventListener("click", () => {
+    const isOpen = editorSection.style.display === "block";
+    editorSection.style.display = isOpen ? "none" : "block";
+    output.style.display = isOpen ? "block" : "none";
+    collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
+    
+    if (isOpen) {
+      // Update the output with the HTML from the textarea when the editor is closed
+      output.innerHTML = htmlInput.value;
+    }
+  });
+</script>
+
+</body>
+</html>
