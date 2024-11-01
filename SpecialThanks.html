@@ -3,91 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live HTML Editor</title>
+  <title>Full-Screen HTML Editor</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
     
-    #editor-container {
-      width: 100%;
-      max-width: 800px;
+    html, body {
+      height: 100%;
       display: flex;
       flex-direction: column;
-      align-items: stretch;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    #editor-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
     }
 
     #collapsible {
-      background-color: #f1f1f1;
+      background-color: #444;
+      color: white;
       cursor: pointer;
-      padding: 10px;
+      padding: 15px;
       text-align: left;
+      font-size: 18px;
       border: none;
       outline: none;
-      font-size: 18px;
       transition: background-color 0.2s;
     }
 
     #collapsible:hover {
-      background-color: #ddd;
+      background-color: #666;
     }
 
     #editor-section {
-      padding: 10px;
       display: none;
-      border: 1px solid #ddd;
+      height: 100%;
+      width: 100%;
+      flex-grow: 1;
+      overflow: hidden;
+      border-top: 1px solid #ccc;
     }
 
     #htmlInput {
       width: 100%;
-      height: 150px;
+      height: 100%;
       padding: 10px;
-      font-family: monospace;
-      font-size: 16px;
-      resize: vertical;
-    }
-
-    #output {
-      border: 1px solid #ddd;
-      padding: 20px;
-      margin-top: 20px;
-      min-height: 200px;
-      width: 100%;
-    }
-  </style>
-</head>
-<body>
-
-<div id="editor-container">
-  <button id="collapsible">Open HTML Editor</button>
-  <div id="editor-section">
-    <textarea id="htmlInput" placeholder="Type your HTML here..."></textarea>
-  </div>
-  <div id="output">This is where your HTML output will appear.</div>
-</div>
-
-<script>
-  const collapsible = document.getElementById("collapsible");
-  const editorSection = document.getElementById("editor-section");
-  const htmlInput = document.getElementById("htmlInput");
-  const output = document.getElementById("output");
-
-  collapsible.addEventListener("click", () => {
-    const isOpen = editorSection.style.display === "block";
-    editorSection.style.display = isOpen ? "none" : "block";
-    collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
-    
-    if (isOpen) {
-      // Update the output with the HTML from the textarea when the editor is closed
-      output.innerHTML = htmlInput.value;
-    }
-  });
-</script>
-
-</body>
-</html>
