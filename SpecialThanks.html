@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Full-Screen HTML Editor</title>
   <style>
-    * {
+    /* Scoped styling to elements outside the output */
+    #main-content * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      background-color: #303035;
+      color: white;
     }
     
-    html, body {
+    #main-content, html, body {
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -27,7 +30,7 @@
     }
 
     #collapsible {
-      background-color: #444;
+      background-color: #182329;
       color: white;
       cursor: pointer;
       padding: 15px;
@@ -39,7 +42,7 @@
     }
 
     #collapsible:hover {
-      background-color: #666;
+      background-color: #192d38;
     }
 
     #editor-section {
@@ -62,6 +65,7 @@
       outline: none;
     }
 
+    /* This will style only the output container without affecting internal styles */
     #output {
       flex-grow: 1;
       width: 100%;
@@ -71,7 +75,7 @@
     }
   </style>
 </head>
-<body>
+<body id="main-content">
 
 <div id="editor-container">
   <button id="collapsible">Open HTML Editor</button>
