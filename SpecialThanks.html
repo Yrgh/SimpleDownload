@@ -87,7 +87,7 @@
   <div id="editor-section">
     <textarea id="htmlInput" placeholder="Type your HTML here..."></textarea>
   </div>
-  <div id="output">This is where your HTML output will appear.</div>
+  <iframe id="output"></iframe>
 </div>
 
 <script>
@@ -104,7 +104,10 @@
     
     if (isOpen) {
       // Update the output with the HTML from the textarea when the editor is closed
-      output.innerHTML = htmlInput.value;
+      const doc = output.contentDocument || output.contentWindow.document;
+      doc.open();
+      doc.write(htmlInput.value);
+      doc.close();
     }
   });
 </script>
