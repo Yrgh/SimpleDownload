@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Full-Screen HTML Editor</title>
   <style>
+    #main-content {
+      padding: 0;
+      margin: 0;
+    }
+    
     #editor-container {
       height: 100%;
       display: flex;
@@ -17,10 +22,7 @@
       box-sizing: border-box;
       background-color: #303035;
       color: white;
-      display: flex;
-      flex-direction: column;
       width: 100%;
-      height: 100%;
     }
 
     #collapsible {
@@ -31,6 +33,7 @@
       overflow: hidden;
       border: none;
       padding: 0;
+      color: white;
       margin: 0;
       background-color: #182329;
       cursor: pointer;
