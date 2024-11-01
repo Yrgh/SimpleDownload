@@ -5,78 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Full-Screen HTML Editor</title>
   <style>
-    #main-content {
-      padding: 0;
+    /* Scoped styling to elements outside the output */
+    #main-content * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
     
-    #editor-container {
+    #main-content, html, body {
       height: 100%;
       display: flex;
       flex-direction: column;
       font-family: Arial, sans-serif;
       overflow: hidden;
-      border: none;
-      padding: 0;
-      margin: 0;
-      box-sizing: border-box;
-      background-color: #303035;
-      color: white;
+    }
+
+    #editor-container {
+      display: flex;
+      flex-direction: column;
       width: 100%;
+      height: 100%;
+      background-color: black;
     }
 
     #collapsible {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-      border: none;
-      padding: 0;
+      background-color: #444;
       color: white;
-      margin: 0;
-      background-color: #182329;
       cursor: pointer;
+      padding: 15px;
       text-align: left;
       font-size: 18px;
-      padding: 15px;
       border: none;
       outline: none;
       transition: background-color 0.2s;
     }
 
     #collapsible:hover {
-      background-color: #192d38;
+      background-color: #666;
     }
 
     #editor-section {
-      height: 100%;
       display: none;
       height: 100%;
       width: 100%;
       flex-grow: 1;
       overflow: hidden;
-      border: none;
+      border-top: 1px solid #ccc;
     }
 
     #htmlInput {
-      height: 100%;
       width: 100%;
       height: 100%;
       padding: 10px;
       font-family: monospace;
       font-size: 16px;
       resize: none;
-      border-top: 1px solid #ccc;
+      border: none;
       outline: none;
     }
 
     /* This will style only the output container without affecting internal styles */
     #output {
       flex-grow: 1;
-      height: 100%;
       width: 100%;
       overflow: auto;
+      padding: 20px;
       border-top: 1px solid #ccc;
     }
   </style>
