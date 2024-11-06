@@ -77,17 +77,21 @@
       overflow: auto;
       border-top: 1px solid #ccc;
     }
+
+    #editor-buttons {
+
+    }
   </style>
 </head>
 <body id="main-content">
 
 <div id="editor-container">
-  <button id="collapsible">Open HTML Editor</button>
+  <button id="collapsible" class="clickable">Open HTML Editor</button>
   <div id="editor-section">
     <div id="editor-buttons">
-      <button id="upload">Upload File</button>
-      <button id="from-url">From URL</button>
-      <button id="back">Ignore Changes</button>
+      <button id="upload" class="clickable">Upload File</button>
+      <button id="from-url" class="clickable">From URL</button>
+      <button id="back" class="clickable">Ignore Changes</button>
     </div>
     <textarea id="htmlInput" placeholder="Type your HTML here..."></textarea>
   </div>
