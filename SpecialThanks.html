@@ -153,7 +153,7 @@
     let reader = new FileReader();
     reader.addEventListener("load", () => {
       html = reader.result;
-      htmlInput.value = reader.result;
+      htmlInput.value = html;
     });
     reader.readAsText(file);
   });
@@ -172,6 +172,10 @@
       alert("Fetch failed!");
       return; // Handle it somehow
     }
+    response.text().then((text)=>{
+      html = text;
+      htmlInput.value = html;
+    });
     
   });
 
