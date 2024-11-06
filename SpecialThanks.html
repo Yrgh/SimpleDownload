@@ -143,11 +143,11 @@
   fileInput.addEventListener("change", (event) => {
     const file = event.target.files[0];
 
-    /*if (!file) return;
+    if (!file) return;
     // Do something here
     const data = await file.text();
 
-    htmlInput.value = data;*/
+    htmlInput.value = data;
   });
   
   uploadButton.addEventListener("click", ()=>{
