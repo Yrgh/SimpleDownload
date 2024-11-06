@@ -164,7 +164,7 @@
 
   urlInput.addEventListener("click", ()=>{
     const url = prompt("Please provide a URL:");
-    const response = fetch(url);
+    const response = await fetch(url);
     if (!response.ok) {
       alert("Fetch failed!");
       return; // Handle it somehow
