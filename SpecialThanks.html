@@ -151,9 +151,11 @@
     let file = event.target.files[0];
 
     let reader = new FileReader();
+    reader.addEventListener("load", () => {
+      html = reader.result;
+      htmlInput.value = reader.result;
+    });
     reader.readAsText(file);
-
-    /*alert("Success");*/
   });
   
   uploadButton.addEventListener("click", ()=>{
