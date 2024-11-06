@@ -79,7 +79,7 @@
       flex-grow: 1;
       width: 100%;
       overflow: auto;
-      border-top: 1px solid #ccc;
+      border: none;
     }
 
     #editor-buttons {
@@ -113,7 +113,22 @@
 </div>
 
 <script>
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.style.display = "none";
+  document.body.appendChild(fileInput);
+  fileInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    // Do something here
+    const data = await response.text();
+
+    htmlInput.value = data;
+  });
+  
   const collapsible = document.getElementById("collapsible");
+  const uploadButton = document.getElementById("upload");
+  const urlInput = document.getElementById("from-url");
+  const ignoreChanges = document.getElementById("back");
   const editorSection = document.getElementById("editor-section");
   const htmlInput = document.getElementById("htmlInput");
   const output = document.getElementById("output");
@@ -131,6 +146,36 @@
       doc.write(htmlInput.value);
       doc.close();
     }
+  });
+
+  uploadButton.addEventListener("click", ()=>{
+    fileInput.click(); // Trigger the button
+  });
+
+  urlInput.addEventListener("click", ()=>{
+    const url = prompt("Please provide a URL:");
+    if (!url) {
+      return;
+    }
+    try {
+      const response = await fetch(url);
+
+      if (!reponse.ok) throw new Error(`Fetch failed. (Status : ${response.status} : ${response.statusText}`);
+
+      const data = await response.text();
+
+      htmlInput.value = data;
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+  ignoreChanges.addEventListener("click", ()=>{
+    // Too lazy to reformat it. It's fast anyways so whatevs.
+    const isOpen = editorSection.style.display === "block";
+    editorSection.style.display = isOpen ? "none" : "block";
+    output.style.display = isOpen ? "block" : "none";
+    collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
   });
 </script>
 
