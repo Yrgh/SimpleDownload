@@ -131,7 +131,7 @@
     
     if (isOpen) {
       // Update the output with the HTML from the textarea when the editor is closed
-      html = htmlInput.value
+      html = htmlInput.value;
       const doc = output.contentDocument || output.contentWindow.document;
       doc.open();
       doc.write(html);
@@ -159,22 +159,6 @@
   
   uploadButton.addEventListener("click", ()=>{
     fileInput.click(); // Trigger the button
-  });
-
-  urlInput.addEventListener("click", ()=>{
-    const url = prompt("Please provide a URL:");
-    let response = null;
-    fetch(URL).then((resp)=>{
-      response = resp;
-    });
-    if (!response.ok) {
-      alert("Fetch failed!");
-      return; // Handle it somehow
-    }
-    response.text().then((text)=>{
-      htmlInput.value = text;
-    });
-    
   });
 
   ignoreChanges.addEventListener("click", ()=>{
