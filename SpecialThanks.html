@@ -145,10 +145,10 @@
   fileInput.style.display = "none";
   document.body.appendChild(fileInput);
   fileInput.addEventListener("change", (event) => {
-    /*if (event.target.files.length < 1) {
-      return;
+    if (event.target.files.length < 1) {
+      //return;
     }
-    const file = event.target.files[0];
+    /*const file = event.target.files[0];
 
     const data = await file.text();
 
