@@ -113,20 +113,6 @@
 </div>
 
 <script>
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.style.display = "none";
-  document.body.appendChild(fileInput);
-  fileInput.addEventListener("change", (event) => {
-    const file = event.target.files[0];
-
-    if (!file) return;
-    // Do something here
-    const data = await file.text();
-
-    htmlInput.value = data;
-  });
-  
   const collapsible = document.getElementById("collapsible");
   const uploadButton = document.getElementById("upload");
   const urlInput = document.getElementById("from-url");
@@ -150,6 +136,20 @@
     }
   });
 
+  const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.style.display = "none";
+    document.body.appendChild(fileInput);
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+  
+      if (!file) return;
+      // Do something here
+      const data = await file.text();
+  
+      htmlInput.value = data;
+    });
+  
   uploadButton.addEventListener("click", ()=>{
     fileInput.click(); // Trigger the button
   });
