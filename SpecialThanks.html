@@ -148,9 +148,9 @@
     if (event.target.files.length < 1) {
       return;
     }
-    /*const file = event.target.files[0];
+    const file = event.target.files[0];
 
-    const data = await file.text();
+    /*const data = await file.text();
 
     alert("Success");*/
   });
@@ -161,9 +161,9 @@
 
   urlInput.addEventListener("click", ()=>{
     const url = prompt("Please provide a URL:");
-    if (!url) {
+    const respons = fetch(url);
 
-    }
+    
   });
 
   ignoreChanges.addEventListener("click", ()=>{
