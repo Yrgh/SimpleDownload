@@ -119,8 +119,10 @@
   document.body.appendChild(fileInput);
   fileInput.addEventListener("change", (event) => {
     const file = event.target.files[0];
+
+    if (!file) return;
     // Do something here
-    const data = await response.text();
+    const data = await file.text();
 
     htmlInput.value = data;
   });
@@ -154,9 +156,7 @@
 
   urlInput.addEventListener("click", ()=>{
     const url = prompt("Please provide a URL:");
-    if (!url) {
-      return;
-    }
+    if (!url) return;
     try {
       const response = await fetch(url);
 
