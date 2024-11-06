@@ -71,7 +71,7 @@
       font-family: monospace;
       font-size: 16px;
       resize: none;
-      border-top: 1px solid #ccc;
+      border: none;
     }
 
     /* This will style only the output container without affecting internal styles */
@@ -152,8 +152,7 @@
 
     let reader = new FileReader();
     reader.addEventListener("load", () => {
-      html = reader.result;
-      htmlInput.value = html;
+      htmlInput.value = reader.result;
     });
     reader.readAsText(file);
   });
@@ -173,8 +172,7 @@
       return; // Handle it somehow
     }
     response.text().then((text)=>{
-      html = text;
-      htmlInput.value = html;
+      htmlInput.value = text;
     });
     
   });
