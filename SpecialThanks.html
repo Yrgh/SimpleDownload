@@ -121,6 +121,8 @@
   const htmlInput = document.getElementById("htmlInput");
   const output = document.getElementById("output");
 
+  let html = "";
+
   collapsible.addEventListener("click", () => {
     const isOpen = editorSection.style.display === "block";
     editorSection.style.display = isOpen ? "none" : "block";
@@ -129,10 +131,12 @@
     
     if (isOpen) {
       // Update the output with the HTML from the textarea when the editor is closed
+      html = htmlInput.value
       const doc = output.contentDocument || output.contentWindow.document;
       doc.open();
-      doc.write(htmlInput.value);
+      doc.write(html);
       doc.close();
+      
     }
   });
 
@@ -156,19 +160,8 @@
   });
 
   urlInput.addEventListener("click", ()=>{
-    /*const url = prompt("Please provide a URL:");
-    if (!url) return;
-    try {
-      const response = await fetch(url);
-
-      if (!reponse.ok) throw new Error(`Fetch failed. (Status : ${response.status} : ${response.statusText}`);
-
-      const data = await response.text();
-
-      htmlInput.value = data;
-    } catch (e) {
-      console.log(e);
-    }*/
+    const url = prompt("Please provide a URL:");
+    
   });
 
   ignoreChanges.addEventListener("click", ()=>{
@@ -177,6 +170,8 @@
     editorSection.style.display = isOpen ? "none" : "block";
     output.style.display = isOpen ? "block" : "none";
     collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
+    
+    htmlInput.value = html;
   });
 </script>
 
