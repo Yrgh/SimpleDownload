@@ -148,9 +148,10 @@
     if (event.target.files.length < 1) {
       return;
     }
-    const file = event.target.files[0];
+    let file = event.target.files[0];
 
-    const data = await file.text();
+    let reader = new FileReader();
+    reader.readAsText(file);
 
     /*alert("Success");*/
   });
