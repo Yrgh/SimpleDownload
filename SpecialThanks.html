@@ -96,6 +96,10 @@
       border-style: solid;
       border-width: 1px;
     }
+
+    .CodeMirror {
+      height: 100%;
+    }
   </style>
 </head>
 <body id="main-content">
@@ -123,8 +127,8 @@
   const htmlInput = document.getElementById("htmlInput");
   const editor = CodeMirror(htmlInput, {
     mode: "htmlmixed",
-    lineNumbers: true,
-    theme: "default",
+    line-numbers: true,
+    theme: "dracula",
     lineWrapping: true,
     readOnly: false,
     tabSize: 4,
