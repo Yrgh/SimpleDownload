@@ -106,9 +106,30 @@
       margin: 0;
       border: none;
     }
+    .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: #333;
+        color: #fff;
+        border-radius: 5px;
+        font-size: 14px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+        z-index: 1000;
+    }
+    .toast.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
   </style>
 </head>
 <body id="main-content">
+<div id="toast" class="toast"></div>
 
 <div id="editor-container">
   <button id="collapsible" class="clickable">Open HTML Editor</button>
@@ -126,6 +147,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/htmlmixed/htmlmixed.min.js"></script>
 
 <script>
+  function showToast(message, duration = 1000) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    // Hide the toast after the specified duration
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, duration);
+  }
+
   const collapsible = document.getElementById("collapsible");
   const uploadButton = document.getElementById("upload");
   const ignoreChanges = document.getElementById("back");
@@ -152,7 +184,11 @@
   let html = "";
 
   collapsible.addEventListener("click", () => {
-    if (!ready) return;
+    if (!ready) {
+      showToast("Cannot open editor right now!");
+      return;
+    }
+    
     const isOpen = editorSection.style.display === "block";
     editorSection.style.display = isOpen ? "none" : "block";
     output.style.display = isOpen ? "block" : "none";
