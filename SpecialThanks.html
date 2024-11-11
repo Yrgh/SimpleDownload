@@ -73,6 +73,9 @@
       font-size: 16px;
       resize: none;
       border: none;
+      padding: 0;
+      margin: 0;
+      border: none;
     }
 
     /* This will style only the output container without affecting internal styles */
@@ -128,6 +131,7 @@
   const ignoreChanges = document.getElementById("back");
   const editorSection = document.getElementById("editor-section");
   const htmlInput = document.getElementById("htmlInput");
+  let ready = false;
   const editor = CodeMirror(htmlInput, {
     mode: "htmlmixed",
     lineNumbers: true,
@@ -141,9 +145,14 @@
   });
   const output = document.getElementById("output");
 
+  editor.on("refresh", () => {
+    ready = true;
+  });
+
   let html = "";
 
   collapsible.addEventListener("click", () => {
+    if (!ready) return;
     const isOpen = editorSection.style.display === "block";
     editorSection.style.display = isOpen ? "none" : "block";
     output.style.display = isOpen ? "block" : "none";
