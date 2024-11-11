@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+s<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -125,17 +125,7 @@
   const ignoreChanges = document.getElementById("back");
   const editorSection = document.getElementById("editor-section");
   const htmlInput = document.getElementById("htmlInput");
-  const editor = null;/*CodeMirror(htmlInput, {
-    mode: "htmlmixed",
-    line-numbers: true,
-    theme: "dracula",
-    lineWrapping: true,
-    readOnly: false,
-    tabSize: 4,
-    indentWithTabs: true,
-    autoCloseTags: true,
-    matchBrackets: true,
-  });*/
+  const editor = CodeMirror(htmlInput);
   const output = document.getElementById("output");
 
   let html = "";
