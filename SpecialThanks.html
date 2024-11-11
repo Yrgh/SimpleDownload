@@ -107,23 +107,26 @@
       border: none;
     }
     .toast {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 10px 20px;
-        background-color: #333;
-        color: #fff;
-        border-radius: 5px;
-        font-size: 14px;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s, visibility 0.3s;
-        z-index: 1000;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 30px;       /* Increased padding for more space */
+      background-color: #333;
+      color: #fff;
+      border-radius: 8px;       /* More rounded corners */
+      font-size: 14px;
+      min-width: 200px;         /* Ensures the box is not too small */
+      text-align: center;       /* Centers the text */
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+      z-index: 1000;
+      font-family: Arial, sans-serif;
     }
     .toast.show {
-        opacity: 1;
-        visibility: visible;
+      opacity: 1;
+      visibility: visible;
     }
 
   </style>
