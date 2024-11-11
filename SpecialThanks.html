@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Full-Screen HTML Editor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
   <style>
     /* Scoped styling to elements outside the output */
     #main-content * {
@@ -111,6 +112,9 @@
   <iframe id="output"></iframe>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/htmlmixed/htmlmixed.min.js"></script>
+
 <script>
   const collapsible = document.getElementById("collapsible");
   const uploadButton = document.getElementById("upload");
@@ -118,6 +122,12 @@
   const editorSection = document.getElementById("editor-section");
   const htmlInput = document.getElementById("htmlInput");
   const output = document.getElementById("output");
+
+  const editor = CodeMirror.fromTextArea(htmlInput, {
+    mode: "htmlmixed",
+    lineNumbers: true,
+    theme: "default"
+  });
 
   let html = "";
 
@@ -129,7 +139,7 @@
     
     if (isOpen) {
       // Update the output with the HTML from the textarea when the editor is closed
-      html = htmlInput.value;
+      html = editor.getValue();
       const doc = output.contentDocument || output.contentWindow.document;
       doc.open();
       doc.write(html);
@@ -150,7 +160,7 @@
 
     let reader = new FileReader();
     reader.addEventListener("load", () => {
-      htmlInput.value = reader.result;
+      editor.setValue(reader.result);
     });
     reader.readAsText(file);
   });
@@ -166,7 +176,7 @@
     output.style.display = isOpen ? "block" : "none";
     collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
     
-    htmlInput.value = html;
+    editor.setValue(html);
   });
 </script>
 
