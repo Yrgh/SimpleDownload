@@ -108,7 +108,6 @@
     }
     
     .toast {
-      box-sizing: border-box;
       position: fixed;
       bottom: 20px;
       left: 50%;
@@ -118,7 +117,6 @@
       color: #fff;
       border-radius: 8px;       /* More rounded corners */
       font-size: 14px;
-      min-width: 200px;         /* Ensures the box is not too small */
       text-align: center;       /* Centers the text */
       opacity: 0;
       visibility: hidden;
@@ -134,7 +132,7 @@
   </style>
 </head>
 <body id="main-content">
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast"><p id="toastdisplay"></p></div>
 
 <div id="editor-container">
   <button id="collapsible" class="clickable">Open HTML Editor</button>
@@ -154,7 +152,7 @@
 <script>
   function showToast(message, duration = 3000) {
     const toast = document.getElementById("toast");
-    toast.textContent = message;
+    document.getElementById("toastdisplay").textContent = message;
     toast.classList.add("show");
 
     // Hide the toast after the specified duration
