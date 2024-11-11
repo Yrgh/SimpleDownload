@@ -1,4 +1,4 @@
-s<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -99,6 +99,9 @@ s<!DOCTYPE html>
 
     .CodeMirror {
       height: 100%;
+      padding: 0;
+      margin: 0;
+      border: none;
     }
   </style>
 </head>
@@ -125,7 +128,17 @@ s<!DOCTYPE html>
   const ignoreChanges = document.getElementById("back");
   const editorSection = document.getElementById("editor-section");
   const htmlInput = document.getElementById("htmlInput");
-  const editor = CodeMirror(htmlInput);
+  const editor = CodeMirror(htmlInput, {
+    mode: "htmlmixed",
+    lineNumbers: true,
+    theme: "default",
+    lineWrapping: true,
+    readOnly: false,
+    tabSize: 4,
+    indentWithTabs: true,
+    autoCloseTags: true,
+    matchBrackets: true,
+  });
   const output = document.getElementById("output");
 
   let html = "";
