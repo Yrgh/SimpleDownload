@@ -104,10 +104,9 @@
   <div id="editor-section">
     <div id="editor-buttons">
       <button id="upload" class="clickable">Upload File</button>
-      <button id="from-url" class="clickable">From URL</button>
       <button id="back" class="clickable">Ignore Changes</button>
     </div>
-    <textarea id="htmlInput" placeholder="Type your HTML here..."></textarea>
+    <textarea id="htmlInput" autocorrect="off" autocomplete="off" spellcheck="false" placeholder="Type your HTML here..."></textarea>
   </div>
   <iframe id="output"></iframe>
 </div>
@@ -115,7 +114,6 @@
 <script>
   const collapsible = document.getElementById("collapsible");
   const uploadButton = document.getElementById("upload");
-  const urlInput = document.getElementById("from-url");
   const ignoreChanges = document.getElementById("back");
   const editorSection = document.getElementById("editor-section");
   const htmlInput = document.getElementById("htmlInput");
