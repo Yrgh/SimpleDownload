@@ -107,7 +107,7 @@
       <button id="upload" class="clickable">Upload File</button>
       <button id="back" class="clickable">Ignore Changes</button>
     </div>
-    <textarea id="htmlInput" autocorrect="off" autocomplete="off" spellcheck="false" placeholder="Type your HTML here..."></textarea>
+    <div id="htmlInput"></div>
   </div>
   <iframe id="output"></iframe>
 </div>
@@ -121,13 +121,18 @@
   const ignoreChanges = document.getElementById("back");
   const editorSection = document.getElementById("editor-section");
   const htmlInput = document.getElementById("htmlInput");
-  const output = document.getElementById("output");
-
-  const editor = CodeMirror.fromTextArea(htmlInput, {
+  const editor = CodeMirror(htmlInput, {
     mode: "htmlmixed",
     lineNumbers: true,
-    theme: "default"
+    theme: "default",
+    lineWrapping: true,
+    readOnly: false,
+    tabSize: 4,
+    indentWithTabs: true,
+    autoCloseTags: true,
+    matchBrackets: true,
   });
+  const output = document.getElementById("output");
 
   let html = "";
 
