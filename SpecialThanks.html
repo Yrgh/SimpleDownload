@@ -193,8 +193,8 @@
 
   collapsible.addEventListener("click", () => {
     if (!ready) {
-      showToast("Cannot open editor right now! Editor is loading", 2500);
-      return;
+      showToast("Cannot open editor right now!", 2500);
+      //return;
     }
     
     const isOpen = editorSection.style.display === "block";
