@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Full-Screen HTML Editor</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
   <style>
     /* Scoped styling to elements outside the output */
     #main-content * {
@@ -149,9 +149,8 @@
   </div>
   <iframe id="output"></iframe>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/htmlmixed/htmlmixed.min.js"></script>
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
 
 <script>
   function showToast(message, duration = 3000) {
@@ -172,11 +171,9 @@
   const htmlInput = document.getElementById("htmlInput");
   let ready = false;
   const editor = CodeMirror(htmlInput, {
-    mode: "htmlmixed",
+    mode: "javascript",
     lineNumbers: true,
     theme: "default",
-    lineWrapping: true,
-    readOnly: false,
     tabSize: 4,
     indentWithTabs: true,
     autoCloseTags: true,
