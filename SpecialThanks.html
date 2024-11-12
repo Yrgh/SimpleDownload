@@ -169,18 +169,9 @@
   const editorSection = document.getElementById("editor-section");
   const output = document.getElementById("output");
   let ready = true;
-  /*const editor = CodeMirror.fromTextArea(document.getElementById("htmlInput"), {
-    mode: "javascript",           // Syntax mode (can be changed to htmlmixed, css, etc.)
-    theme: "default",             // Editor theme
-    lineNumbers: true,            // Display line numbers
-    autoCloseBrackets: true,      // Auto-close brackets
-    matchBrackets: true,          // Highlight matching brackets
-    indentUnit: 2,                // Indentation size (2 spaces)
-    tabSize: 2,                   // Size of tab character
-    indentWithTabs: false,        // Use spaces for indentation
-    lineWrapping: true,           // Wrap long lines
-    autoRefresh: true             // Auto-refresh editor content
-  });*/
+  const editor = CodeMirror.fromTextArea(document.getElementById("htmlInput"), {
+    
+  });
 
   let html = "";
 
