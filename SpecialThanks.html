@@ -188,7 +188,13 @@
     const output = document.getElementById("output");
     let ready = true;
     const editor = CodeMirror.fromTextArea(document.getElementById("htmlInput"), {
-      
+      lineNumbers: true,
+      mode: 'javascript', // Change this mode based on language
+      theme: 'monokai',   // Change theme as needed
+      autoCloseBrackets: true,
+      matchBrackets: true,
+      tabSize: 4,
+      indentWithTabs: true,
     });
   
     let html = "";
