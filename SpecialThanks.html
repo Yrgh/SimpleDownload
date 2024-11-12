@@ -137,7 +137,10 @@
       height: 100%;
       width: 100%;
     }
-
+	
+	.CodeMirror-gutters {
+	  border-right: 2px solid #FFF8F0 !important; /* Optional: Add border between gutter and code section */
+	}
   </style>
 </head>
 <body id="main-content">
@@ -202,7 +205,7 @@
     const ignoreChanges = document.getElementById("back");
     const editorSection = document.getElementById("editor-section");
     const output = document.getElementById("output");
-    let ready = true;
+    let ready = false;
     const editor = CodeMirror.fromTextArea(document.getElementById("htmlInput"), {
       lineNumbers: true,
       mode: 'javascript', // Change this mode based on language
@@ -212,10 +215,32 @@
       tabSize: 4,
       indentWithTabs: true,
     });
-  
-    let html = "aaa";
-
-    editor.setValue(html);
+	
+	let html = "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n";
+	
+	function toggleEditor() {
+	  const isOpen = editorSection.style.display === "block";
+      editorSection.style.display = isOpen ? "none" : "block";
+      output.style.display = isOpen ? "block" : "none";
+      collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
+	  return isOpen;
+	}
+	
+	editor.on("change", function (cm, change) {
+	  if (!ready) {
+	  	ready = true;
+		html = "";
+		editor.setValue(html);
+		toggleEditor();
+	  }
+	  //console.log(JSON.stringify(change));
+	});
+	
+    toggleEditor();
+	
+	editor.refresh();
+	
+	editor.setValue(html);
   
     collapsible.addEventListener("click", () => {
       if (!ready) {
@@ -223,10 +248,7 @@
         //return;
       }
       
-      const isOpen = editorSection.style.display === "block";
-      editorSection.style.display = isOpen ? "none" : "block";
-      output.style.display = isOpen ? "block" : "none";
-      collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
+      const isOpen = toggleEditor();
       
       if (isOpen) {
         // Update the output with the HTML from the textarea when the editor is closed
@@ -262,10 +284,7 @@
   
     ignoreChanges.addEventListener("click", ()=>{
       // Too lazy to reformat it. It's fast anyways so whatevs.
-      const isOpen = editorSection.style.display === "block";
-      editorSection.style.display = isOpen ? "none" : "block";
-      output.style.display = isOpen ? "block" : "none";
-      collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
+      toggleEditor();
       
       editor.setValue(html);
     });
