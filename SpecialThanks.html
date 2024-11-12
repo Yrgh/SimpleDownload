@@ -146,7 +146,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
 
 <script>
-  import {EditorState} from "@codemirror/state"
+  let startState = EditorState.create({
+    doc: "Hello World",
+    extensions: [keymap.of(defaultKeymap)]
+  });
+  
   showToast("Loaded");
   function showToast(message, duration = 3000) {
     const toast = document.getElementById("toast");
