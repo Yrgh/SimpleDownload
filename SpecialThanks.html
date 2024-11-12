@@ -127,6 +127,17 @@
       white-space: nowrap;
     }
 
+    #inputContainer {
+      width: 100%;
+      height: 100%;
+      
+    }
+
+    .CodeMirror {
+      height: 100%;
+      width: 100%;
+    }
+
   </style>
 </head>
 <body id="main-content">
@@ -139,7 +150,9 @@
       <button id="upload" class="clickable">Upload File</button>
       <button id="back" class="clickable">Ignore Changes</button>
     </div>
-    <textarea id="htmlInput"></textarea>
+    <div id="inputContainer">
+      <textarea id="htmlInput"></textarea>
+    </div>
   </div>
   <iframe id="output"></iframe>
 </div>
