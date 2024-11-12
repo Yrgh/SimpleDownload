@@ -4,7 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Full-Screen HTML Editor</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.0.1/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.0.1/codemirror.min.js"></script>
+  <!-- Additional modes and addons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.0.1/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.0.1/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.0.1/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.0.1/addon/display/placeholder.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.0.1/addon/display/autorefresh.min.js"></script>
+
   <style>
     /* Scoped styling to elements outside the output */
     #main-content * {
@@ -138,20 +146,12 @@
       <button id="upload" class="clickable">Upload File</button>
       <button id="back" class="clickable">Ignore Changes</button>
     </div>
-    <div id="htmlInput"></div>
+    <textarea id="htmlInput"></textarea>
   </div>
   <iframe id="output"></iframe>
 </div>
-  
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
 
 <script>
-  let startState = EditorState.create({
-    doc: "Hello World",
-    extensions: [keymap.of(defaultKeymap)]
-  });
-  
-  showToast("Loaded");
   function showToast(message, duration = 3000) {
     const toast = document.getElementById("toast");
     document.getElementById("toastdisplay").textContent = message;
@@ -167,11 +167,28 @@
   const uploadButton = document.getElementById("upload");
   const ignoreChanges = document.getElementById("back");
   const editorSection = document.getElementById("editor-section");
-  const htmlInput = document.getElementById("htmlInput");
   const output = document.getElementById("output");
   let ready = true;
+  const editor = CodeMirror.fromTextArea(document.getElementById("htmlInput"), {
+    mode: "javascript",           // Syntax mode (can be changed to htmlmixed, css, etc.)
+    theme: "default",             // Editor theme
+    lineNumbers: true,            // Display line numbers
+    autoCloseBrackets: true,      // Auto-close brackets
+    matchBrackets: true,          // Highlight matching brackets
+    indentUnit: 2,                // Indentation size (2 spaces)
+    tabSize: 2,                   // Size of tab character
+    indentWithTabs: false,        // Use spaces for indentation
+    lineWrapping: true,           // Wrap long lines
+    autoRefresh: true             // Auto-refresh editor content
+  });
 
   let html = "";
+
+  editor.on("keypress", function (cm, event) {
+    if (event.key === "Enter") {
+      cm.execCommand("newlineAndIndent");
+    }
+  });
 
   collapsible.addEventListener("click", () => {
     if (!ready) {
