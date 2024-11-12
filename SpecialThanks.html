@@ -169,7 +169,7 @@
   const editorSection = document.getElementById("editor-section");
   const output = document.getElementById("output");
   let ready = true;
-  const editor = CodeMirror.fromTextArea(document.getElementById("htmlInput"), {
+  /*const editor = CodeMirror.fromTextArea(document.getElementById("htmlInput"), {
     mode: "javascript",           // Syntax mode (can be changed to htmlmixed, css, etc.)
     theme: "default",             // Editor theme
     lineNumbers: true,            // Display line numbers
@@ -180,15 +180,9 @@
     indentWithTabs: false,        // Use spaces for indentation
     lineWrapping: true,           // Wrap long lines
     autoRefresh: true             // Auto-refresh editor content
-  });
+  });*/
 
   let html = "";
-
-  editor.on("keypress", function (cm, event) {
-    if (event.key === "Enter") {
-      cm.execCommand("newlineAndIndent");
-    }
-  });
 
   collapsible.addEventListener("click", () => {
     if (!ready) {
