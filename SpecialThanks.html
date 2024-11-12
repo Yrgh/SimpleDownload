@@ -182,73 +182,75 @@
     consoleErrOriginal.apply(console, args);
   };
 
-  console.log("Hello!");
-  console.log("Hi!");
-
-  const collapsible = document.getElementById("collapsible");
-  const uploadButton = document.getElementById("upload");
-  const ignoreChanges = document.getElementById("back");
-  const editorSection = document.getElementById("editor-section");
-  const output = document.getElementById("output");
-  let ready = true;
-  const editor = CodeMirror.fromTextArea(document.getElementById("htmlInput"), {
-    
-  });
-
-  let html = "";
-
-  collapsible.addEventListener("click", () => {
-    if (!ready) {
-      showToast("Cannot open editor right now!", 2500);
-      //return;
-    }
-    
-    const isOpen = editorSection.style.display === "block";
-    editorSection.style.display = isOpen ? "none" : "block";
-    output.style.display = isOpen ? "block" : "none";
-    collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
-    
-    if (isOpen) {
-      // Update the output with the HTML from the textarea when the editor is closed
-      html = editor.getValue();
-      const doc = output.contentDocument || output.contentWindow.document;
-      doc.open();
-      doc.write(html);
-      doc.close();
-      
-    }
-  });
-
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.style.display = "none";
-  document.body.appendChild(fileInput);
-  fileInput.addEventListener("change", (event) => {
-    if (event.target.files.length < 1) {
-      return;
-    }
-    let file = event.target.files[0];
-
-    let reader = new FileReader();
-    reader.addEventListener("load", () => {
-      editor.setValue(reader.result);
-    });
-    reader.readAsText(file);
-  });
+  try {
+    console.log("Hello!");
+    console.log("Hi!");
   
-  uploadButton.addEventListener("click", ()=>{
-    fileInput.click(); // Trigger the button
-  });
-
-  ignoreChanges.addEventListener("click", ()=>{
-    // Too lazy to reformat it. It's fast anyways so whatevs.
-    const isOpen = editorSection.style.display === "block";
-    editorSection.style.display = isOpen ? "none" : "block";
-    output.style.display = isOpen ? "block" : "none";
-    collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
+    const collapsible = document.getElementById("collapsible");
+    const uploadButton = document.getElementById("upload");
+    const ignoreChanges = document.getElementById("back");
+    const editorSection = document.getElementById("editor-section");
+    const output = document.getElementById("output");
+    let ready = true;
+    const editor = CodeMirror.fromTextArea(document.getElementById("htmlInput"), {
+      
+    });
+  
+    let html = "";
+  
+    collapsible.addEventListener("click", () => {
+      if (!ready) {
+        showToast("Cannot open editor right now!", 2500);
+        //return;
+      }
+      
+      const isOpen = editorSection.style.display === "block";
+      editorSection.style.display = isOpen ? "none" : "block";
+      output.style.display = isOpen ? "block" : "none";
+      collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
+      
+      if (isOpen) {
+        // Update the output with the HTML from the textarea when the editor is closed
+        html = editor.getValue();
+        const doc = output.contentDocument || output.contentWindow.document;
+        doc.open();
+        doc.write(html);
+        doc.close();
+        
+      }
+    });
+  
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.style.display = "none";
+    document.body.appendChild(fileInput);
+    fileInput.addEventListener("change", (event) => {
+      if (event.target.files.length < 1) {
+        return;
+      }
+      let file = event.target.files[0];
+  
+      let reader = new FileReader();
+      reader.addEventListener("load", () => {
+        editor.setValue(reader.result);
+      });
+      reader.readAsText(file);
+    });
     
-    editor.setValue(html);
-  });
+    uploadButton.addEventListener("click", ()=>{
+      fileInput.click(); // Trigger the button
+    });
+  
+    ignoreChanges.addEventListener("click", ()=>{
+      // Too lazy to reformat it. It's fast anyways so whatevs.
+      const isOpen = editorSection.style.display === "block";
+      editorSection.style.display = isOpen ? "none" : "block";
+      output.style.display = isOpen ? "block" : "none";
+      collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
+      
+      editor.setValue(html);
+    });
+  }
 </script>
 
 </body>
