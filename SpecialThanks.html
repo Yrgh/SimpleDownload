@@ -99,23 +99,6 @@
       border-style: solid;
       border-width: 1px;
     }
-
-    #htmlInput {
-      height: 100%;
-      width: 100%;
-      border: none;
-      padding: 0;
-      margin: 0;
-      border: none;
-      overflow: hidden;
-    }
-
-    .CodeMirror {
-      height: 100%;
-      padding: 0;
-      margin: 0;
-      border: none;
-    }
     
     .toast {
       position: fixed;
@@ -163,6 +146,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
 
 <script>
+  import {EditorState} from "@codemirror/state"
+  showToast("Loaded");
   function showToast(message, duration = 3000) {
     const toast = document.getElementById("toast");
     document.getElementById("toastdisplay").textContent = message;
@@ -179,22 +164,8 @@
   const ignoreChanges = document.getElementById("back");
   const editorSection = document.getElementById("editor-section");
   const htmlInput = document.getElementById("htmlInput");
-  let ready = false;
-  const editor = CodeMirror(htmlInput, {
-    mode: "javascript",
-    lineNumbers: true,
-    theme: "default",
-    tabSize: 4,
-    indentWithTabs: true,
-    autoCloseTags: true,
-    matchBrackets: true,
-  });
   const output = document.getElementById("output");
-
-  editor.on("refresh", () => {
-    ready = true;
-    showToast("Editor ready!", 3500);
-  });
+  let ready = true;
 
   let html = "";
 
