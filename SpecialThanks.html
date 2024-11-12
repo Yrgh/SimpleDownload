@@ -163,6 +163,27 @@
     }, duration);
   }
 
+  const consoleLogOriginal = console.log;
+  const consoleErrOriginal = console.error;
+  const consoleWarnOriginal = console.warn;
+
+  console.log = function (...args) {
+    showToast(args);
+    consoleLogOriginal.apply(console, args);
+  };
+
+  console.warn = function (...args) {
+    showToast("Warning: " + args);
+    consoleWarnOriginal.apply(console, args);
+  };
+
+  console.error = function (...args) {
+    showToast("ERR: " + args);
+    consoleErrOriginal.apply(console, args);
+  };
+
+  console.log("Hello!");
+
   const collapsible = document.getElementById("collapsible");
   const uploadButton = document.getElementById("upload");
   const ignoreChanges = document.getElementById("back");
