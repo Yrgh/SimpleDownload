@@ -1,70 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Full-Screen HTML Editor</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/monokai.min.css">
-  <style>
-    /* Scoped styling to elements outside the output */
-    #main-content * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    #main-content, html, body {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      padding: 0;
-      margin: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Screen HTML Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/monokai.min.css">
+    <style>
+        /* Scoped styling to elements outside the output */
+        #main-content * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    #editor-container {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      height: 100%;
-      padding: 0;
-      margin: 0;
-    }
+        #main-content,
+        html,
+        body {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
 
-    #collapsible {
-      text-align: left;
-      font-size: 18px;
-    }
+        #editor-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
 
-    .clickable {
-      font-family: Arial, sans-serif;
-      background-color: #2a2a2e;
-      color: white;
-      cursor: pointer;
-      padding: 15px !important;
-      text-align: center;
-      font-size: 14px;
-      border: none;
-      outline: none;
-      transition: background-color 0.2s;
-    }
+        #collapsible {
+            text-align: left;
+            font-size: 18px;
+        }
 
-    .clickable:hover {
-      background-color: #27363b;
-    }
+        .clickable {
+            font-family: Arial, sans-serif;
+            background-color: #2a2a2e;
+            color: white;
+            cursor: pointer;
+            padding: 15px !important;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+            outline: none;
+            transition: background-color 0.2s;
+        }
 
-    #editor-section {
-      background-color: black;
-      display: none;
-      height: 100%;
-      width: 100%;
-      flex-grow: 1;
-      overflow: hidden;
-      border: none;
-    }
+        .clickable:hover {
+            background-color: #27363b;
+        }
 
-    /*#htmlInput {
+        #editor-section {
+            background-color: black;
+            display: none;
+            height: 100%;
+            width: 100%;
+            flex-grow: 1;
+            overflow: hidden;
+            border: none;
+        }
+
+        /*#htmlInput {
       background-color: #1a1a1c;
       color: white;
       width: 100%;
@@ -79,98 +82,106 @@
       border: none;
     }*/
 
-    /* This will style only the output container without affecting internal styles */
-    #output {
-      flex-grow: 1;
-      width: 100%;
-      overflow: auto;
-      border: none;
-    }
+        /* This will style only the output container without affecting internal styles */
+        #output {
+            flex-grow: 1;
+            width: 100%;
+            overflow: auto;
+            border: none;
+        }
 
-    #editor-buttons {
-      display: flex;
-      width: 100%;
-      gap: 3px;
-    }
+        #editor-buttons {
+            display: flex;
+            width: 100%;
+            gap: 3px;
+        }
 
-    #editor-buttons .clickable {
-      flex: 1;
-      border-radius: 5px;
-      border-color: white;
-      border-style: solid;
-      border-width: 1px;
-    }
-    
-    .toast {
-      position: fixed;
-      bottom: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #333;
-      color: #fff;
-      border-radius: 10px;       /* More rounded corners */
-      font-size: 14px;
-      text-align: center;       /* Centers the text */
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s, visibility 0.3s;
-      z-index: 1000;
-      font-family: Arial, sans-serif;
-    }
-    .toast.show {
-      opacity: 1;
-      visibility: visible;
-    }
-    #toastdisplay {
-      margin: 5px;
-      padding: 0px;  
-      white-space: nowrap;
-    }
+        #editor-buttons .clickable {
+            flex: 1;
+            border-radius: 5px;
+            border-color: white;
+            border-style: solid;
+            border-width: 1px;
+        }
 
-    #inputContainer {
-      width: 100%;
-      height: 100%;
-      
-    }
+        .toast {
+            position: fixed;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            border-radius: 10px;
+            /* More rounded corners */
+            font-size: 14px;
+            text-align: center;
+            /* Centers the text */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1000;
+            font-family: Arial, sans-serif;
+        }
 
-    .CodeMirror {
-      height: 100%;
-      width: 100%;
-    }
-	
-    .CodeMirror-gutters {
-        border-right: 1px solid #FFF8F0 !important; /* Optional: Add border between gutter and code section */
-     }
-       
-     .CodeMirror-linenumber {
-	text-align: left;
-     }
-  </style>
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #toastdisplay {
+            margin: 5px;
+            padding: 0px;
+            white-space: nowrap;
+        }
+
+        #inputContainer {
+            width: 100%;
+            height: 100%;
+
+        }
+
+        .CodeMirror {
+            height: 100%;
+            width: 100%;
+        }
+
+        .CodeMirror-gutters {
+            border-right: 1px solid #FFF8F0 !important;
+            /* Optional: Add border between gutter and code section */
+        }
+
+        .CodeMirror-linenumber {
+            text-align: left;
+        }
+    </style>
 </head>
+
 <body id="main-content">
-<div id="toast" class="toast"><p id="toastdisplay"></p></div>
-
-<div id="editor-container">
-  <button id="collapsible" class="clickable">Open HTML Editor</button>
-  <div id="editor-section">
-    <div id="editor-buttons">
-      <button id="upload" class="clickable">Upload File</button>
-      <button id="back" class="clickable">Ignore Changes</button>
+    <div id="toast" class="toast">
+        <p id="toastdisplay"></p>
     </div>
-    <div id="inputContainer">
-      <textarea id="htmlInput"></textarea>
-    </div>
-  </div>
-  <iframe id="output"></iframe>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
-  
-<script>
-  function showToast(message, duration = 3000) {
+    <div id="editor-container">
+        <button id="collapsible" class="clickable">Open HTML Editor</button>
+        <div id="editor-section">
+            <div id="editor-buttons">
+                <button id="upload" class="clickable">Upload File</button>
+                <button id="back" class="clickable">Ignore Changes</button>
+            </div>
+            <div id="inputContainer">
+                <textarea id="htmlInput"></textarea>
+            </div>
+        </div>
+        <iframe id="output"></iframe>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
+
+    <script>
+        function showToast(message, duration = 3000) {
     const toast = document.getElementById("toast");
     document.getElementById("toastdisplay").textContent = message;
     toast.classList.add("show");
@@ -300,7 +311,8 @@
   } catch (e) {
     console.error(e.message);
   }
-</script>
+    </script>
 
 </body>
+
 </html>
