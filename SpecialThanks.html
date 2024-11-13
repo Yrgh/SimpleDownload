@@ -138,9 +138,9 @@
       width: 100%;
     }
 	
-	.CodeMirror-gutters {
-	  border-right: 2px solid #FFF8F0 !important; /* Optional: Add border between gutter and code section */
-	}
+    .CodeMirror-gutters {
+        border-right: 1px solid #FFF8F0 !important; /* Optional: Add border between gutter and code section */
+     }
   </style>
 </head>
 <body id="main-content">
@@ -245,7 +245,7 @@
     collapsible.addEventListener("click", () => {
       if (!ready) {
         showToast("Cannot open editor right now!", 2500);
-        //return;
+        return;
       }
       
       const isOpen = toggleEditor();
