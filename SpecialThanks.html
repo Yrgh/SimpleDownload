@@ -1,174 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Full-Screen HTML Editor</title>
-  <style>
-    /* Scoped styling to elements outside the output */
-    #main-content * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    #main-content, html, body {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      padding: 0;
-      margin: 0;
-    }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Full-Screen HTML Editor</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/monokai.min.css">
+	<style>
+		/* Scoped styling to elements outside the output */
+		#main-content * {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
 
-    #editor-container {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      height: 100%;
-      padding: 0;
-      margin: 0;
-    }
+		#main-content,
+		html,
+		body {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+			padding: 0;
+			margin: 0;
+		}
 
-    #collapsible {
-      text-align: left;
-      font-size: 18px;
-    }
+		#editor-container {
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			margin: 0;
+		}
 
-    .clickable {
-      font-family: Arial, sans-serif;
-      background-color: #2a2a2e;
-      color: white;
-      cursor: pointer;
-      padding: 15px !important;
-      text-align: center;
-      font-size: 14px;
-      border: none;
-      outline: none;
-      transition: background-color 0.2s;
-    }
+		#collapsible {
+			text-align: left;
+			font-size: 18px;
+		}
 
-    .clickable:hover {
-      background-color: #27363b;
-    }
+		.clickable {
+			font-family: Arial, sans-serif;
+			background-color: #2a2a2e;
+			color: white;
+			cursor: pointer;
+			padding: 15px !important;
+			text-align: center;
+			font-size: 14px;
+			border: none;
+			outline: none;
+			transition: background-color 0.2s;
+		}
 
-    #editor-section {
-      background-color: black;
-      display: none;
-      height: 100%;
-      width: 100%;
-      flex-grow: 1;
-      overflow: hidden;
-      border: none;
-    }
+		.clickable:hover {
+			background-color: #27363b;
+		}
 
-    #htmlInput {
-      background-color: #1a1a1c;
-      color: white;
-      width: 100%;
-      height: 100%;
-      padding: 10px;
-      font-family: monospace;
-      font-size: 16px;
-      resize: none;
-      border: none;
-    }
+		#editor-section {
+			background-color: black;
+			display: none;
+			height: 100%;
+			width: 100%;
+			flex-grow: 1;
+			overflow: hidden;
+			border: none;
+		}
 
-    /* This will style only the output container without affecting internal styles */
-    #output {
-      flex-grow: 1;
-      width: 100%;
-      overflow: auto;
-      border: none;
-    }
+		/*#htmlInput {
+		background-color: #1a1a1c;
+		color: white;
+		width: 100%;
+		height: 100%;
+		padding: 10px;
+		font-family: monospace;
+		font-size: 16px;
+		resize: none;
+		border: none;
+		padding: 0;
+		margin: 0;
+		border: none;
+		}*/
 
-    #editor-buttons {
-      display: flex;
-      width: 100%;
-      gap: 3px;
-    }
+		/* This will style only the output container without affecting internal styles */
+		#output {
+			flex-grow: 1;
+			width: 100%;
+			overflow: auto;
+			border: none;
+		}
 
-    #editor-buttons .clickable {
-      flex: 1;
-      border-radius: 5px;
-      border-color: white;
-      border-style: solid;
-      border-width: 1px;
-    }
-  </style>
-</head>
-<body id="main-content">
+		#editor-buttons {
+			display: flex;
+			width: 100%;
+			gap: 3px;
+		}
 
-<div id="editor-container">
-  <button id="collapsible" class="clickable">Open HTML Editor</button>
-  <div id="editor-section">
-    <div id="editor-buttons">
-      <button id="upload" class="clickable">Upload File</button>
-      <button id="back" class="clickable">Ignore Changes</button>
-    </div>
-    <textarea id="htmlInput" autocorrect="off" autocomplete="off" spellcheck="false" placeholder="Type your HTML here..."></textarea>
-  </div>
-  <iframe id="output"></iframe>
-</div>
+		#editor-buttons .clickable {
+			flex: 1;
+			border-radius: 5px;
+			border-color: white;
+			border-style: solid;
+			border-width: 1px;
+		}
 
-<script>
-  const collapsible = document.getElementById("collapsible");
-  const uploadButton = document.getElementById("upload");
-  const ignoreChanges = document.getElementById("back");
-  const editorSection = document.getElementById("editor-section");
-  const htmlInput = document.getElementById("htmlInput");
-  const output = document.getElementById("output");
+		.toast {
+			position: fixed;
+			bottom: 8px;
+			left: 50%;
+			transform: translateX(-50%);
+			background-color: #333;
+			color: #fff;
+			border-radius: 10px;
+			/* More rounded corners */
+			font-size: 14px;
+			text-align: center;
+			/* Centers the text */
+			opacity: 0;
+			visibility: hidden;
+			transition: opacity 0.3s, visibility 0.3s;
+			z-index: 1000;
+			font-family: Arial, sans-serif;
+		}
 
-  let html = "";
+		.toast.show {
+			opacity: 1;
+			visibility: visible;
+		}
 
-  collapsible.addEventListener("click", () => {
-    const isOpen = editorSection.style.display === "block";
-    editorSection.style.display = isOpen ? "none" : "block";
-    output.style.display = isOpen ? "block" : "none";
-    collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
-    
-    if (isOpen) {
-      // Update the output with the HTML from the textarea when the editor is closed
-      html = htmlInput.value;
-      const doc = output.contentDocument || output.contentWindow.document;
-      doc.open();
-      doc.write(html);
-      doc.close();
-      
-    }
-  });
+		#toastdisplay {
+			margin: 5px;
+			padding: 0px;
+			white-space: nowrap;
+		}
 
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.style.display = "none";
-  document.body.appendChild(fileInput);
-  fileInput.addEventListener("change", (event) => {
-    if (event.target.files.length < 1) {
-      return;
-    }
-    let file = event.target.files[0];
+		#inputContainer {
+			width: 100%;
+			height: 100%;
 
-    let reader = new FileReader();
-    reader.addEventListener("load", () => {
-      htmlInput.value = reader.result;
-    });
-    reader.readAsText(file);
-  });
-  
-  uploadButton.addEventListener("click", ()=>{
-    fileInput.click(); // Trigger the button
-  });
+		}
 
-  ignoreChanges.addEventListener("click", ()=>{
-    // Too lazy to reformat it. It's fast anyways so whatevs.
-    const isOpen = editorSection.style.display === "block";
-    editorSection.style.display = isOpen ? "none" : "block";
-    output.style.display = isOpen ? "block" : "none";
-    collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
-    
-    htmlInput.value = html;
-  });
-</script>
+		.CodeMirror {
+			height: 100%;
+			width: 100%;
+		}
 
-</body>
+		.CodeMirror-gutters {
+			border-right: 1px solid #FFF8F0 !important;
+			/* Optional: Add border between gutter and code section */
+		}
+
+		.CodeMirror-linenumber {
+			text-align: left;
+		}
+	</style>
+	</head>
+
+	<body id="main-content">
+		<div id="toast" class="toast">
+			<p id="toastdisplay"></p>
+		</div>
+
+		<div id="editor-container">
+			<button id="collapsible" class="clickable">Open HTML Editor</button>
+			<div id="editor-section">
+				<div id="editor-buttons">
+					<button id="upload" class="clickable">Upload File</button>
+					<button id="back" class="clickable">Ignore Changes</button>
+				</div>
+				<div id="inputContainer">
+					<textarea id="htmlInput"></textarea>
+				</div>
+			</div>
+			<iframe id="output"></iframe>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/xml/xml.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/css/css.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode//javascript.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
+
+		<script>
+			function showToast(message, duration = 3000) {
+				const toast = document.getElementById("toast");
+				document.getElementById("toastdisplay").textContent = message;
+				toast.classList.add("show");
+
+				// Hide the toast after the specified duration
+				setTimeout(() => {
+					toast.classList.remove("show");
+				}, duration);
+			}
+
+			const consoleLogOriginal = console.log;
+			const consoleErrOriginal = console.error;
+			const consoleWarnOriginal = console.warn;
+
+			console.log = function (...args) {
+				showToast(args);
+				consoleLogOriginal.apply(console, args);
+			};
+
+			console.warn = function (...args) {
+				showToast("Warning: " + args);
+				consoleWarnOriginal.apply(console, args);
+			};
+
+			console.error = function (...args) {
+				showToast("ERR: " + args);
+				consoleErrOriginal.apply(console, args);
+			};
+
+			try {
+				console.log("Hello!");
+				console.log("Hi!");
+
+				const collapsible = document.getElementById("collapsible");
+				const uploadButton = document.getElementById("upload");
+				const ignoreChanges = document.getElementById("back");
+				const editorSection = document.getElementById("editor-section");
+				const output = document.getElementById("output");
+				let ready = false;
+				const editor = CodeMirror.fromTextArea(document.getElementById("htmlInput"), {
+					lineNumbers: true,
+					mode: 'htmlmixed', // Change this mode based on language
+					theme: 'monokai',   // Change theme as needed
+					autoCloseBrackets: true,
+					matchBrackets: true,
+					tabSize: CodeMirror.defaults.indentUnit,
+					indentWithTabs: true,
+				});
+
+				let html = "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n";
+
+				function toggleEditor() {
+					const isOpen = editorSection.style.display === "block";
+					editorSection.style.display = isOpen ? "none" : "block";
+					output.style.display = isOpen ? "block" : "none";
+					collapsible.textContent = isOpen ? "Open HTML Editor" : "Close HTML Editor";
+					return isOpen;
+				}
+
+				editor.on("change", function (cm, change) {
+					if (!ready) {
+						ready = true;
+						html = "";
+						editor.setValue(html);
+						toggleEditor();
+					}
+					//console.log(JSON.stringify(change));
+				});
+
+				toggleEditor();
+
+				editor.refresh();
+
+				editor.setValue(html);
+
+				collapsible.addEventListener("click", () => {
+					if (!ready) {
+						showToast("Cannot open editor right now!", 2500);
+						return;
+					}
+
+					const isOpen = toggleEditor();
+
+					if (isOpen) {
+						// Update the output with the HTML from the textarea when the editor is closed
+						html = editor.getValue();
+						const doc = output.contentDocument || output.contentWindow.document;
+						doc.open();
+						doc.write(html);
+						doc.close();
+
+					}
+				});
+
+				const fileInput = document.createElement("input");
+				fileInput.type = "file";
+				fileInput.style.display = "none";
+				document.body.appendChild(fileInput);
+				fileInput.addEventListener("change", (event) => {
+					if (event.target.files.length < 1) {
+						return;
+					}
+					let file = event.target.files[0];
+
+					let reader = new FileReader();
+					reader.addEventListener("load", () => {
+						editor.setValue(reader.result);
+					});
+					reader.readAsText(file);
+				});
+
+				uploadButton.addEventListener("click", ()=>{
+					fileInput.click(); // Trigger the button
+				});
+
+				ignoreChanges.addEventListener("click", ()=>{
+					// Too lazy to reformat it. It's fast anyways so whatevs.
+					toggleEditor();
+
+					editor.setValue(html);
+				});
+
+				window.addEventListener("beforeunload", (event) => {
+					editor.toTextArea();
+					editor = null;
+				});
+			} catch (e) {
+				console.error(e.message);
+			}
+		</script>
+
+	</body>
+
 </html>
