@@ -1,1 +1,28 @@
 Game Engine/Library Design Document:
+
+End Goal: A library that enables fast game development by instantiating and interweaving provided classes
+Relies on: 
+  - A simple event system. Functions can subscribe and unsubscribe from events. Events can be triggered. Events can be either raw or ordered-handling
+
+Known components:
+
+GPUInterface - Abstract class for representing access to graphics without needing to write your own code to access an API.
+EventRaw<...> - Template providing a subscription system.
+EventUnhandled<...> - Template for providing a subscription system. Stops execution of a call when a function "handles" the event.
+AudioManagerF32 - Class that provides access to .WAV and float-generated audio.
+AudioRecorderF32 - Class that provides access to microphone access in float format
+Renderer - Class that uses a GPUInterface instance to draw to a Window
+Window - Class that represents a window on one's device.
+NetworkingServer - Class that provides the ability for others to send messages to and receive messages from your device over the Internet. Comes with encryption options
+NetworkingClient - Class that provides the ability for you to connect to a NetworkingServer in another device/program.
+PhysicsServer - Class that handles physics for objects using the Jolt Physics Engine.
+ResourceManager - Class that manages what data to load and unload. This includes files and any large pieces of data you submit
+
+Tools:
+
+QueueList<T> - A template for a queue using a Singly-Linked-List, where both the head and tail are known
+SerialBuffer - A class that serializes/de-serializes one or more strings (of both readable and binary data).
+File - A class that represents a file in the file system provides tools for manipulating, loading, and unloading that file
+FileDir - A class that represents a "folder" (directory) in the file system
+
+Various math tools - Math tools that allow conversion between multiple libraries (Jolt/GLM/etc.) and use one of those libraries as the underlying system.
