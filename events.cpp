@@ -1,5 +1,6 @@
 #include <exception>
 
+// Implements a queue through a linked list, but exposes the list for your leisure
 template<class T> class QueueList {
 public:
     struct Element {
@@ -36,6 +37,7 @@ public:
     }
 };
 
+// Allows you to call multiple function pointers at a time
 template<typename ...Args> class Event {
 public:
     using Listener = void (*)(Args...);
@@ -75,7 +77,9 @@ public:
     }
 };
 
-// Only triggers events until one "handles" it. Do not do anything if you don't handle it.
+/* Allows you to call function pointers until one handles the event. The order added is the order called.
+ * Do not subscribe functions that could/will modify inputs or perform external actions yet not handle the event.
+*/
 template<typename ...Args> class EventUnhandled {
 public:
     using Listener = bool (*)(Args...);
