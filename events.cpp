@@ -1,8 +1,15 @@
-#include <exception>
-
-// Implements a queue through a linked list, but exposes the list for your leisure
+// Implements a queue through a linked list, but exposes the pointers for your leisure
 template<class T> class QueueList {
 public:
+    ~QueueList() {
+        Element current = head;
+        while (current) {
+            Element next = current->next;
+            delete current;
+            current = next;
+        }
+    }
+    
     struct Element {
         Element *next;
         T value;
