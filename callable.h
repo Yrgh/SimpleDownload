@@ -1,4 +1,4 @@
-#include <exception>
+#include <stdexcept>
 
 namespace WellSpring {
   // Contains helper classes for Callable, as well as Callable itself
@@ -70,7 +70,7 @@ namespace WellSpring {
       
       Ret operator()(Args... args) const {
         // Better to warn them first
-        if (!is_valid()) throw std::exception();
+        if (!is_valid()) throw std::runtime_error("Attempted to invoke an invalid Callable");
         return func->call(args...);
       }
 
@@ -79,7 +79,7 @@ namespace WellSpring {
           func = other.func->clone();
           func->refcount++;
         } else {
-          throw std::invalid_argument("New Callable");
+          throw std::invalid_argument("Attempted to set to an invalid Callable");
         }
       }
       
