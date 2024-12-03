@@ -73,6 +73,15 @@ namespace WellSpring {
         if (!is_valid()) throw std::exception();
         return func->call(args...);
       }
+
+      Callable &operator=(const Callable &) {
+        if (other.is_valid()) {
+          func = other.func->clone();
+          func->refcount++;
+        } else {
+          throw std::invalid_argument("New Callable");
+        }
+      }
       
       template<class T> Callable(Ret (T::*method)(Args...), T *obj) :
         func(new _FunctionMethod<T, Ret, Args...>(method, obj))
