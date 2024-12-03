@@ -81,6 +81,7 @@ namespace WellSpring {
         } else {
           throw std::invalid_argument("Attempted to set to an invalid Callable");
         }
+        return *this;
       }
       
       template<class T> Callable(Ret (T::*method)(Args...), T *obj) :
