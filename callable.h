@@ -9,7 +9,7 @@ namespace WellSpring {
       FUNC,
       METHOD,
     };
-    
+
     template<class Ret, class... Args> class _FunctionBase {
     public:
       virtual _FuncType get_type() const { return _FuncType::NONE; }
@@ -22,6 +22,7 @@ namespace WellSpring {
       typedef Ret (*FPtr)(Args...);
       FPtr func; 
     public:
+      int refcount = 0;
       _FuncType get_type() const override { return _FuncType::FUNC; }
       Ret call(Args... args) const override { return func(args...); }
       
@@ -36,13 +37,14 @@ namespace WellSpring {
     template<class T, class Ret, class... Args> class _FunctionMethod : public _FunctionBase<Ret, Args...> {
     protected:
       T *data;
+      
       typedef Ret (T::*FPtr)(Args...);
       FPtr func; 
     public:
       _FuncType get_type() const override { return _FuncType::METHOD; }
       Ret call(Args... args) const override { 
-        // It's not our job
-        //if (data == nullptr) throw std::bad_function_call();
+        // Should we do it? Yes, but it isn't our job.
+        //if (data == nullptr) throw std::exception();
         return (data->*func)(args...);
       }
       
@@ -74,16 +76,24 @@ namespace WellSpring {
       
       template<class T> Callable(Ret (T::*method)(Args...), T *obj) :
         func(new _FunctionMethod<T, Ret, Args...>(method, obj))
-      {}
+      { func->refcount++; }
       
-      Callable(Ret (*f)(Args...)) : func(new _FunctionFunc<Ret, Args...>(f)) {}
+      Callable(Ret (*f)(Args...)) : func(new _FunctionFunc<Ret, Args...>(f)) { func->refcount++; }
       Callable() : func(nullptr) {}
       Callable(const Callable &other) {
-        if (other.is_valid()) func = other.func->clone();
+        if (other.is_valid()) {
+          func = other.func->clone();
+          func->refcount++;
+        }
       }
       
       ~Callable() {
-        if (func) delete func;
+        if (func) {
+          func->refcount--;
+          // You never know...
+          if (func->refcount <= 0)
+            delete func;
+        }
       }
     };
   }
