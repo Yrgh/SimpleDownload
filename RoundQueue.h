@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <cstring>
 
 template<class T> class RoundQueue {
 private:
@@ -40,6 +41,19 @@ public:
     if (_size == 0) throw std::runtime_error("Peeking with nothing to peek!");
     return _data[_index_to_buffer(0)];
   }
+
+  bool operator==(const RoundQueue &other) const {
+    if (_data == nullptr && other._data == nullptr) return true;
+    if (_used != other._used) return false;
+    for (int i = 0; i < _used; ++i) {
+      if (_data[_index_to_buffer(i)] != other._data[_index_to_buffer(i)]) return false;
+    }
+  }
+
+  bool operator!=(const RoundQueue &other) const {
+    return !(*this == other);
+  }
+
   void rebuild(int more) {
     if (more < 0) throw std::length_error("More < 0");
     T *data = new T[_size + more];
