@@ -12,29 +12,42 @@ public:
   RoundQueue(int initial_size) : _size(initial_size), _data(new T[initial_size]) {}
   RoundQueue() {}
   RoundQueue(const RoundQueue &other) :
-    _used(other._used), _start(other._start), _size(other._size), _data(new T[other._size])
+    _used(other._used), _start(other._start), _size(other._size)
   {
-    memcpy(_data, other._data, _size * sizeof(T));
+    if (other._data) {
+      _data = new T[_size];
+      memcpy(_data, other._data, _size * sizeof(T));
+    }
   }
   
   ~RoundQueue() {
     delete[] _data;
   }
+
+  int size() const { return _used; }
+  int capacity() const { return _size; }
+  T *data() { return _data; }
+  bool empty() { return _used == 0; }
+  void clear() { 
+    _used = 0;
+    _start = 0;
+    _size = 0;
+    delete[] _data;
+    _data = nullptr;
+  }
   
   // Elaborate due to the possibility of x = x, in which case we use deleted memory unless we
   //  do this
   RoundQueue &operator=(const RoundQueue &other) {
-    int used = other._used;
-    int size = other._size;
-    int start = other._start;
-    T *data = new T[_size];
-    memcpy(data, other._data, size * sizeof(T));
+    _used = other._used;
+    _size = other._size;
+    _start = other._start;
     if(_data)
       delete[] _data;
-    _used = used;
-    _size = size;
-    _start = start;
-    _data = data;
+    if (other._data) {
+      _data = new T[_size];
+      memcpy(_data, other._data, size * sizeof(T));
+    }
   }
   
   T &peek() {
