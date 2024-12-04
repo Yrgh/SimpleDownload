@@ -87,12 +87,10 @@ public:
     _data[_index_to_buffer(_used - 1)] = value;
   }
   
-  T pop() {
+  void pop() {
     if (_used == 0) throw std::runtime_error("Popping with nothing to pop!");
-    T value = _data[_start];
     _used--;
     if (_used == 0) _start = 0;
     else _start = (_start + 1) % _size;
-    return value;
   }
 };
