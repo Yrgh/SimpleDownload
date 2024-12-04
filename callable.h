@@ -15,6 +15,9 @@ namespace WellSpring {
       virtual _FuncType get_type() const { return _FuncType::NONE; }
       virtual Ret call(Args...) const = 0;
       virtual _FunctionBase *clone() const = 0;
+      // other should be of the same type as this
+      virtual bool equals(const _FunctionBase *other) const { return true; }
+      int refcount = 0;
     };
     
     template<class Ret, class... Args> class _FunctionFunc : public _FunctionBase<Ret, Args...> {
@@ -22,9 +25,11 @@ namespace WellSpring {
       typedef Ret (*FPtr)(Args...);
       FPtr func; 
     public:
-      int refcount = 0;
       _FuncType get_type() const override { return _FuncType::FUNC; }
       Ret call(Args... args) const override { return func(args...); }
+      bool equals(const _FunctionBase<Ret, Args...> *other) const override {
+        return func == ((_FunctionFunc<Ret, Args...> *)(other))->func;
+      }
       
       _FunctionBase<Ret, Args...> *clone() const override {
         return new _FunctionFunc(*this);
@@ -46,6 +51,9 @@ namespace WellSpring {
         // Should we do it? Yes, but it isn't our job.
         //if (data == nullptr) throw std::exception();
         return (data->*func)(args...);
+      }
+      bool equals(const _FunctionBase<Ret, Args...> *other) const override {
+        return func == ((_FunctionMethod<T, Ret, Args...> *)(other))->func && data == ((_FunctionMethod<T, Ret, Args...> *)(other))->data;
       }
       
       _FunctionBase<Ret, Args...> *clone() const override {
@@ -74,7 +82,7 @@ namespace WellSpring {
         return func->call(args...);
       }
 
-      Callable &operator=(const Callable &) {
+      Callable &operator=(const Callable &other) {
         if (other.is_valid()) {
           func = other.func->clone();
           func->refcount++;
@@ -82,6 +90,16 @@ namespace WellSpring {
           throw std::invalid_argument("Attempted to set to an invalid Callable");
         }
         return *this;
+      }
+
+      bool operator==(const Callable &other) {
+        if (other.func == func) return true;
+        if (other.func->get_type() != other.func->get_type()) return false;
+        return func->equals(other.func);
+      }
+
+      bool operator!=(const Callable &other) {
+        return !(*this==other);
       }
       
       template<class T> Callable(Ret (T::*method)(Args...), T *obj) :
