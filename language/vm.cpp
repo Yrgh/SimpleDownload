@@ -1,6 +1,10 @@
 #ifndef _VM_CPP_
 #define _VM_CPP_
 
+#ifndef MAX_STACK_SIZE
+#define MAX_STACK_SIZE 256
+#endif
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,14 +44,16 @@ enum : byte { // If no register is specified, assume left
   OPCODE_STOREIR, // Indirect store to the pointer in the right registers
   
   OPCODE_JMP, // Sets the program counter
-  OPCODE_JMPZ, // JMP if last CMP was zero
-  OPCODE_JMPN, // JMP if last CMP underflowed
-  // Example: x >= y = LOAD y, SWAP, LOAD x, USUB, JMPN after
+  OPCODE_JMPZ, // Jumps if register is zero
+  
+  OPCODE_CMPE, // Register = 0 if left == right for a given type
+  OPCODE_CMPL, // Register = 0 if left > right for a given type
+  OPCODE_CMPG, // Register = 0 if left < right for a given type
+  // Use these with bitwise operations
   
   OPCODE_PUSH, // Pushes a register
   OPCODE_POP,  // Pops a register
   
-  OPCODE_CMP, // Unsigned integer subtraction that modifies the zero and 
   // Arithmetc (NEG not for uints)
   OPCODE_ADD,
   OPCODE_SUB,
@@ -62,7 +68,7 @@ enum : byte { // If no register is specified, assume left
   OPCODE_AND, // Bitwise AND
   OPCODE_OR,  // Bitwise OR
   OPCODE_XOR, // Bitwise XOR
-  OPCODE_NOT, // Reverse bits
+  OPCODE_NOT, // Reverse bits of register
   
   OPCODE_SPECCALL, // Call a VM function of given ID
 
@@ -101,18 +107,22 @@ struct VM {
   int instructions_size = 0;
   int prog_counter = 0;
   byte registers[8*2] = {};
-  byte *stack_base = nullptr;
-  byte *stack_ptr;
-  byte *frame_ptr;
-  uint32_t stack_size = 0;
+  byte stack_base[MAX_STACK_SIZE] = {};
+  uint32_t stack_end;
+  uint32_t stack_frame;
+  
+  #define stack_ptr (stack_base + stack_end)
+  #define frame_ptr (stack_base + stack_frame)
   
   void push(const void *data, int size) {
+    if (stack_base + MAX_STACK_SIZE < stack_ptr) exit(1);
     memcpy(stack_ptr, data, size);
-    stack_ptr += size;
+    stack_end += size;
   }
   
   void pop(void *dest, int size) {
-    stack_ptr -= size;
+    if (stack_base + size > stack_ptr) exit(1);
+    stack_end -= size;
     memcpy(dest, stack_ptr, size);
   }
   
@@ -126,11 +136,13 @@ struct VM {
         if (instructions_size < pos + size) exit(1);
         memcpy(registers, instructions + pos, size);
       })
+      
       SWITCH_CASE(OPCODE_SWAP, {
         uint64_t left = *(uint64_t *) registers;
         *(uint64_t *) registers = *(uint64_t *) (registers + 8);
         *(uint64_t *) (registers + 8) = left;
       })
+      
       #define APPLY_OP(type, op) \
       do { \
         *(type *) registers op##= *(type *) (registers + 8); \
@@ -222,12 +234,72 @@ struct VM {
       
       SWITCH_CASE(OPCODE_RETURN, {
         pop(&prog_counter, 4);
+        pop(&stack_frame, 4);
+      })
+      
+      SWITCH_CASE(OPCODE_CALL, {
+        push(&stack_frame, 4);
+        push(&prog_counter, 4);
+        prog_counter = *(int32_t *) GET_BYTES(4);
+      })
+      
+      SWITCH_CASE(OPCODE_PUSH, {
+        byte reg = *GET_BYTES(1);
+        push(registers + UPPER(reg), LOWER(reg));
+      })
+      
+      SWITCH_CASE(OPCODE_POP, {
+        byte reg = *GET_BYTES(1);
+        pop(registers + UPPER(reg), LOWER(reg));
+      })
+      
+      SWITCH_CASE(OPCODE_LOADSP, {
+        char size = 1 << (*GET_BYTES(1));
+        uint32_t pos = *(uint32_t *) GET_BYTES(4);
+        if (stack_ptr < pos + size + stack_base) exit(1);
+        memcpy(registers, stack_base + pos, size);
+      })
+      
+      SWITCH_CASE(OPCODE_LOADFP, {
+        char size = 1 << (*GET_BYTES(1));
+        uint32_t pos = *(uint32_t *) GET_BYTES(4);
+        if (stack_ptr < pos + size + frame_ptr) exit(1);
+        memcpy(registers, frame_ptr + pos, size);
+      })
+      
+      SWITCH_CASE(OPCODE_LOADIR, {
+        char size = 1 << (*GET_BYTES(1));
+        memcpy(registers, *(void **) (registers + 8), size);
+      })
+      
+      SWITCH_CASE(OPCODE_STORESP, {
+        char size = 1 << (*GET_BYTES(1));
+        uint32_t pos = *(uint32_t *) GET_BYTES(4);
+        if (stack_ptr < pos + size + stack_base) exit(1);
+        memcpy(stack_base + pos, registers, size);
+      })
+      
+      SWITCH_CASE(OPCODE_STOREFP, {
+        char size = 1 << (*GET_BYTES(1));
+        uint32_t pos = *(uint32_t *) GET_BYTES(4);
+        if (stack_ptr < pos + size + frame_ptr) exit(1);
+        memcpy(frame_ptr + pos,registers, size);
+      })
+      
+      SWITCH_CASE(OPCODE_STOREIR, {
+        char size = 1 << (*GET_BYTES(1));
+        memcpy(*(void **) (registers + 8), registers, size);
+      })
+      
+      SWITCH_CASE(OPCODE_JMP, {
+        prog_counter = *(int32_t *) GET_BYTES(4);
       })
     }
   }
   
   void execute() {
     prog_counter = -10;
+    push(&stack_frame, 4);
     push(&prog_counter, 4);
     prog_counter = 0;
     do {
@@ -236,9 +308,9 @@ struct VM {
   }
   
   void init() {
-    stack_base = new byte[16]; // 4 * uint32_t/int32_t/float
-    stack_ptr  = stack_base;
-    frame_ptr  = stack_base;
+    if (sizeof(void *) != 8) exit(-20);
+    stack_end   = 0;
+    stack_frame = 0;
   }
   #undef GET_BYTES
   #undef APPLY_OP
