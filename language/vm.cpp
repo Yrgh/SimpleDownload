@@ -75,9 +75,10 @@ enum : byte { // If no register is specified, assume left
   REG_LEFT  = 0x00,
   REG_RIGHT = 0x08,
   
-  TYPE_UNSIGNED = 0x00,
-  TYPE_SIGNED   = 0x01,
-  TYPE_FLOAT    = 0x02,
+  TYPE_NONE     = 0x00,
+  TYPE_UNSIGNED = 0x01,
+  TYPE_SIGNED   = 0x02,
+  TYPE_FLOAT    = 0x03,
   
   TYPE_SIZE_8  = 0x00,
   TYPE_SIZE_16 = 0x01,
@@ -108,8 +109,8 @@ struct VM {
   int prog_counter = 0;
   byte registers[8*2] = {};
   byte stack_base[MAX_STACK_SIZE] = {};
-  uint32_t stack_end;
-  uint32_t stack_frame;
+  int32_t stack_end;
+  int32_t stack_frame;
   
   #define stack_ptr (stack_base + stack_end)
   #define frame_ptr (stack_base + stack_frame)
@@ -132,7 +133,7 @@ struct VM {
     switch(*GET_BYTES(1)) {
       SWITCH_CASE(OPCODE_LOADC, {
         char size = 1 << (*GET_BYTES(1));
-        uint32_t pos = *(uint32_t *) GET_BYTES(4);
+        int32_t pos = *(int32_t *) GET_BYTES(4);
         if (instructions_size < pos + size) exit(1);
         memcpy(registers, instructions + pos, size);
       })
@@ -159,7 +160,7 @@ struct VM {
             APPLY_OP(uint16_t, op); \
             break; \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(32)): \
-            APPLY_OP(uint32_t, op); \
+            APPLY_OP(int32_t, op); \
             break; \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(64)): \
             APPLY_OP(uint64_t, op); \
@@ -206,7 +207,7 @@ struct VM {
             APPLY_OP(uint16_t); \
             break; \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(32)): \
-            APPLY_OP(uint32_t); \
+            APPLY_OP(int32_t); \
             break; \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(64)): \
             APPLY_OP(uint64_t); \
@@ -255,14 +256,14 @@ struct VM {
       
       SWITCH_CASE(OPCODE_LOADSP, {
         char size = 1 << (*GET_BYTES(1));
-        uint32_t pos = *(uint32_t *) GET_BYTES(4);
+        int32_t pos = *(int32_t *) GET_BYTES(4);
         if (stack_ptr < pos + size + stack_base) exit(1);
         memcpy(registers, stack_base + pos, size);
       })
       
       SWITCH_CASE(OPCODE_LOADFP, {
         char size = 1 << (*GET_BYTES(1));
-        uint32_t pos = *(uint32_t *) GET_BYTES(4);
+        int32_t pos = *(int32_t *) GET_BYTES(4);
         if (stack_ptr < pos + size + frame_ptr) exit(1);
         memcpy(registers, frame_ptr + pos, size);
       })
@@ -274,14 +275,14 @@ struct VM {
       
       SWITCH_CASE(OPCODE_STORESP, {
         char size = 1 << (*GET_BYTES(1));
-        uint32_t pos = *(uint32_t *) GET_BYTES(4);
+        int32_t pos = *(int32_t *) GET_BYTES(4);
         if (stack_ptr < pos + size + stack_base) exit(1);
         memcpy(stack_base + pos, registers, size);
       })
       
       SWITCH_CASE(OPCODE_STOREFP, {
         char size = 1 << (*GET_BYTES(1));
-        uint32_t pos = *(uint32_t *) GET_BYTES(4);
+        int32_t pos = *(int32_t *) GET_BYTES(4);
         if (stack_ptr < pos + size + frame_ptr) exit(1);
         memcpy(frame_ptr + pos,registers, size);
       })
