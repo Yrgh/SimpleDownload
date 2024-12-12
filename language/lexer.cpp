@@ -18,7 +18,7 @@ enum class TokenType {
   
   IDENTIFIER, STRING, NUMBER,
   
-  KEY_LET,
+  KEY_LET,KEY_IF, KEY_ELSE, KEY_WHILE, KEY_FUNC, KEY_RETURN,
   
   SEMI, 
   
@@ -113,6 +113,86 @@ class Lexer {
     }
   }
   
+  Token string() {
+    start = current; // Exclude the "
+    while (peek() != '"' && !atEnd()) {
+      if (peek() == '\n')
+        return errorToken("Unterminated string at newline");
+      else if (peek() == '\\') {
+        advance(); // We don't want to let it end the string
+        if (atEnd()) break;
+      }
+      advance();
+    }
+    
+    if (atEnd()) return errorToken("Unterminated string at EOF");
+    
+    Token tok = makeToken(TokenType::STRING); // Don't include the "
+    advance(); // Consume the other "
+    return tok;
+  }
+  
+  bool isAlpha(char c) {
+    return 
+      (c >= 'a' && c <= 'z') ||
+      (c >= 'A' && c <= 'Z') ||
+      c == '_';
+  }
+  
+  bool isDigit(char c) {
+    return c >= '0' && c <= '9';
+  }
+  
+  Token number() {
+    bool dec = false;
+    while (isDigit(peek())) advance();
+    
+    if (peek() == '.')
+      while (isDigit(peek())) advance();
+    
+    return makeToken(TokenType::NUMBER);
+  }
+  
+  TokenType checkKeyword(int from, int length, const char *rest, TokenType type) {
+    if (
+      current - start == from + length &&
+      memcmp(start + from, rest, length) == 0
+    ) {
+      return type;
+    }
+    
+    return TokenType::IDENTIFIER;
+  }
+  
+  TokenType wordType() {
+    switch (start[0]) {
+      case 'e': return checkKeyword(1, 3, "lse", TokenType::KEY_ELSE);
+      case 'f':
+        if (current - start > 1) {
+          switch (start[1]) {
+            case 'u': return checkKeyword(2, 2, "nc", TokenType::KEY_FUNC);
+          }
+        }
+        break;
+      case 'i': return checkKeyword(1, 1, "f", TokenType::KEY_IF);
+      case 'l': return checkKeyword(1, 2, "et", TokenType::KEY_LET);
+      case 'r': return checkKeyword(1, 5, "eturn", TokenType::KEY_RETURN);
+      case 'w': return checkKeyword(1, 4, "hile", TokenType::KEY_WHILE);
+    }
+    
+    return TokenType::IDENTIFIER;
+  }
+  
+  Token word() {
+    char c = peek();
+    while (isAlpha(c) || isDigit(c)) {
+      advance();
+      c = peek();
+    }
+    
+    return makeToken(wordType());
+  }
+  
   const char *start, *current;
   int line;
 public:
@@ -129,6 +209,8 @@ public:
     if (atEnd()) return makeToken(TokenType::EOF_TOKEN);
     
     char c = advance();
+    if (isDigit(c)) return number();
+    if (isAlpha(c)) return word();
     switch (c) {
       case '(': return makeToken(TokenType::LEFT_ROUND);
       case ')': return makeToken(TokenType::RIGHT_ROUND);
@@ -151,6 +233,8 @@ public:
         match('=') ? TokenType::GT_EQUAL : TokenType::GT_MARK);
       case '<': return makeToken(
         match('=') ? TokenType::LT_EQUAL : TokenType::LT_MARK);
+      case '"':
+        return string();
       
     }
     
