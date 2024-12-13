@@ -92,7 +92,7 @@ enum : byte { // If no register is specified, assume left
 #define LOWER(x) (x & 0x0F)
 #define MERGE(u, d) ((u << 4) | d)
 
-#define TYPE_TO_LEFT (x) MERGE(REG_LEFT , LOWER(x))
+#define TYPE_TO_LEFT(x)  MERGE(REG_LEFT , LOWER(x))
 #define TYPE_TO_RIGHT(x) MERGE(REG_RIGHT, LOWER(x))
 
 template<class T> constexpr T max(T a, T b) { return a > b ? a : b; }
