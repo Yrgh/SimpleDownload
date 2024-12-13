@@ -32,16 +32,16 @@ enum : byte { // If no register is specified, assume left
   OPCODE_CALL,
   OPCODE_RETURN,
   
-  OPCODE_LOADSP, // Load from the stack
-  OPCODE_LOADFP, // Load from the current stack frame
-  OPCODE_LOADIR, // Indirect load from the pointer in the right register
+  OPCODE_SPP, // Sets register to pointer to stack data
+  OPCODE_FPP, // Sets register to pointer to stack frame data
+  
+  OPCODE_STORE, // Indirect store to the pointer in the register
+  OPCODE_LOAD, // Indirect load from the pointer in the register
   OPCODE_LOADC,  // Load a constant
   
   OPCODE_SWAP, // Swaps the registers
   
-  OPCODE_STORESP, // Stores to the stack
-  OPCODE_STOREFP, // Stores to the current stack frame
-  OPCODE_STOREIR, // Indirect store to the pointer in the right registers
+  OPCODE_CONV, // Convert left from type to type
   
   OPCODE_JMP, // Sets the program counter
   OPCODE_JMPZ, // Jumps if register is zero
@@ -54,7 +54,7 @@ enum : byte { // If no register is specified, assume left
   OPCODE_PUSH, // Pushes a register
   OPCODE_POP,  // Pops a register
   
-  // Arithmetc (NEG not for uints)
+  // Arithmetc
   OPCODE_ADD,
   OPCODE_SUB,
   OPCODE_MUL,
@@ -91,6 +91,9 @@ enum : byte { // If no register is specified, assume left
 #define UPPER(x) (x >> 4)
 #define LOWER(x) (x & 0x0F)
 #define MERGE(u, d) ((u << 4) | d)
+
+#define TYPE_TO_LEFT (x) MERGE(REG_LEFT , LOWER(x))
+#define TYPE_TO_RIGHT(x) MERGE(REG_RIGHT, LOWER(x))
 
 template<class T> constexpr T max(T a, T b) { return a > b ? a : b; }
 template<class T> constexpr T min(T a, T b) { return a < b ? a : b; }
@@ -242,6 +245,7 @@ struct VM {
         push(&stack_frame, 4);
         push(&prog_counter, 4);
         prog_counter = *(int32_t *) GET_BYTES(4);
+        stack_frame = stack_end;
       })
       
       SWITCH_CASE(OPCODE_PUSH, {
@@ -254,42 +258,24 @@ struct VM {
         pop(registers + UPPER(reg), LOWER(reg));
       })
       
-      SWITCH_CASE(OPCODE_LOADSP, {
+      SWITCH_CASE(OPCODE_LOAD, {
         char size = 1 << (*GET_BYTES(1));
-        int32_t pos = *(int32_t *) GET_BYTES(4);
-        if (stack_ptr < pos + size + stack_base) exit(1);
-        memcpy(registers, stack_base + pos, size);
+        memcpy(registers, *(void **) registers, size);
       })
       
-      SWITCH_CASE(OPCODE_LOADFP, {
+      SWITCH_CASE(OPCODE_STORE, {
         char size = 1 << (*GET_BYTES(1));
-        int32_t pos = *(int32_t *) GET_BYTES(4);
-        if (stack_ptr < pos + size + frame_ptr) exit(1);
-        memcpy(registers, frame_ptr + pos, size);
+        memcpy(*(void **) registers, registers, size);
       })
       
-      SWITCH_CASE(OPCODE_LOADIR, {
-        char size = 1 << (*GET_BYTES(1));
-        memcpy(registers, *(void **) (registers + 8), size);
+      SWITCH_CASE(OPCODE_SPP, {
+        int32_t index = *(int32_t *) GET_BYTES(4);
+        * (void **) registers = stack_base + index;
       })
       
-      SWITCH_CASE(OPCODE_STORESP, {
-        char size = 1 << (*GET_BYTES(1));
-        int32_t pos = *(int32_t *) GET_BYTES(4);
-        if (stack_ptr < pos + size + stack_base) exit(1);
-        memcpy(stack_base + pos, registers, size);
-      })
-      
-      SWITCH_CASE(OPCODE_STOREFP, {
-        char size = 1 << (*GET_BYTES(1));
-        int32_t pos = *(int32_t *) GET_BYTES(4);
-        if (stack_ptr < pos + size + frame_ptr) exit(1);
-        memcpy(frame_ptr + pos,registers, size);
-      })
-      
-      SWITCH_CASE(OPCODE_STOREIR, {
-        char size = 1 << (*GET_BYTES(1));
-        memcpy(*(void **) (registers + 8), registers, size);
+      SWITCH_CASE(OPCODE_SPP, {
+        int32_t index = *(int32_t *) GET_BYTES(4);
+        * (void **) registers = frame_ptr + index;
       })
       
       SWITCH_CASE(OPCODE_JMP, {
