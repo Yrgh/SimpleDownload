@@ -2,7 +2,7 @@
 #define _VM_CPP_
 
 #ifndef MAX_STACK_SIZE
-#define MAX_STACK_SIZE 256
+#define MAX_STACK_SIZE 512
 #endif
 
 #include <stdint.h>
@@ -273,7 +273,7 @@ struct VM {
         * (void **) registers = stack_base + index;
       })
       
-      SWITCH_CASE(OPCODE_SPP, {
+      SWITCH_CASE(OPCODE_FPP, {
         int32_t index = *(int32_t *) GET_BYTES(4);
         * (void **) registers = frame_ptr + index;
       })
