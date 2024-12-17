@@ -2,27 +2,32 @@
 #define _LEXER_CPP_
 
 #include <string.h>
+#include <stdio.h>
 
 enum class TokenType {
+  // Error goes first so that null tokens are error tokens! 
+  ERROR, EOF_TOKEN,
+  
   LEFT_ROUND , RIGHT_ROUND,
   LEFT_SQUARE, RIGHT_SQUARE,
   LEFT_CURLY , RIGHT_CURLY,
   
   COMMA, DOT,
-  MINUS, PLUS, STAR, SLASH,
+  MINUS, MINUS_EQ,
+  PLUS,  PLUS_EQ,
+  STAR,  STAR_EQ,
+  SLASH, SLASH_EQ,
   
-  EX_MARK, EX_EQUAL,
-  EQ_MARK, EQ_EQUAL,
-  GT_MARK, GT_EQUAL,
-  LT_MARK, LT_EQUAL,
+  EX, EX_EQUAL,
+  EQ, EQ_EQUAL,
+  GT, GT_EQUAL,
+  LT, LT_EQUAL,
   
   IDENTIFIER, STRING, NUMBER,
   
-  KEY_LET,KEY_IF, KEY_ELSE, KEY_WHILE, KEY_FUNC, KEY_RETURN,
+  KEY_LET, KEY_IF, KEY_ELSE, KEY_WHILE, KEY_FUNC, KEY_RETURN,
   
-  SEMI, 
-  
-  ERROR, EOF_TOKEN,
+  SEMI
 };
 
 struct Token {
@@ -140,11 +145,10 @@ class Lexer {
   }
   
   bool isDigit(char c) {
-    return c >= '0' && c <= '9';
+    return (c >= '0') && (c <= '9');
   }
   
   Token number() {
-    bool dec = false;
     while (isDigit(peek())) advance();
     
     if (peek() == '.')
@@ -192,10 +196,10 @@ class Lexer {
     
     return makeToken(wordType());
   }
-  
+public:
   const char *start, *current;
   int line;
-public:
+  
   void init(const char *source) {
     start = source;
     current = source;
@@ -220,19 +224,23 @@ public:
       case '}': return makeToken(TokenType::RIGHT_CURLY);
       case ',': return makeToken(TokenType::COMMA);
       case '.': return makeToken(TokenType::DOT);
-      case '-': return makeToken(TokenType::MINUS);
-      case '+': return makeToken(TokenType::PLUS);
-      case '*': return makeToken(TokenType::STAR);
-      case '/': return makeToken(TokenType::SLASH);
       case ';': return makeToken(TokenType::SEMI);
       case '!': return makeToken(
-        match('=') ? TokenType::EX_EQUAL : TokenType::EX_MARK);
+        match('=') ? TokenType::EX_EQUAL : TokenType::EX);
       case '=': return makeToken(
-        match('=') ? TokenType::EQ_EQUAL : TokenType::EQ_MARK);
+        match('=') ? TokenType::EQ_EQUAL : TokenType::EQ);
       case '>': return makeToken(
-        match('=') ? TokenType::GT_EQUAL : TokenType::GT_MARK);
+        match('=') ? TokenType::GT_EQUAL : TokenType::GT);
       case '<': return makeToken(
-        match('=') ? TokenType::LT_EQUAL : TokenType::LT_MARK);
+        match('=') ? TokenType::LT_EQUAL : TokenType::LT);
+      case '-': return makeToken(
+        match('=') ? TokenType::MINUS_EQ : TokenType::MINUS);
+      case '+': return makeToken(
+        match('=') ? TokenType::PLUS_EQ  : TokenType::PLUS);
+      case '/': return makeToken(
+        match('=') ? TokenType::SLASH_EQ : TokenType::SLASH);
+      case '*': return makeToken(
+        match('=') ? TokenType::STAR_EQ  : TokenType::STAR);
       case '"':
         return string();
       
