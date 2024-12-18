@@ -77,9 +77,16 @@ class Compiler {
   
   byte processNum(Token tok) {
     emitByte(OPCODE_LOADC);
-    if (strcontains(tok.start, 0, tok.length, '.')) {// It's a float, but which one?
+    char suffix = tok.start[tok.length - 1];
+    if (
+      suffix == 'f' || suffix == 'd' ||
+      strcontains(tok.start, 0, tok.length, '.')
+    ) {
+      // It's a float, but which one?
       double num = strtod(tok.start, NULL);
       if (
+        suffix == 'f' ||
+        suffix != 'd' &&
         abs(num) < 3.4028235677973366e+38 &&
         abs(num) > 1.175494351e-38
       ) {
