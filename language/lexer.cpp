@@ -157,6 +157,13 @@ class Lexer {
       while (isDigit(peek())) advance();
     }
     
+    switch (peek()) {
+      case 'f':
+      case 'd':
+        advance();
+        break;
+    }
+    
     return makeToken(TokenType::NUMBER);
   }
   
