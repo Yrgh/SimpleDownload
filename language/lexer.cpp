@@ -75,6 +75,7 @@ class Lexer {
   }
   
   char peekNext() {
+    if (atEnd()) return '\0';
     return current[1];
   }
   
@@ -151,8 +152,10 @@ class Lexer {
   Token number() {
     while (isDigit(peek())) advance();
     
-    if (peek() == '.')
+    if (peek() == '.' && isDigit(peekNext())) {
+      advance();
       while (isDigit(peek())) advance();
+    }
     
     return makeToken(TokenType::NUMBER);
   }
