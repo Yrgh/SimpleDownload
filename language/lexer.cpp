@@ -2,7 +2,6 @@
 #define _LEXER_CPP_
 
 #include <string.h>
-#include <stdio.h>
 
 enum class TokenType {
   // Error goes first so that null tokens are error tokens! 
@@ -13,10 +12,15 @@ enum class TokenType {
   LEFT_CURLY , RIGHT_CURLY,
   
   COMMA, DOT,
+  
   MINUS, MINUS_EQ,
   PLUS,  PLUS_EQ,
   STAR,  STAR_EQ,
   SLASH, SLASH_EQ,
+  
+  CAR, CAR_EQU, // ^
+  AMP, AMP_EQU, // &
+  PIP, PIP_EQU, // |
   
   EX, EX_EQUAL,
   EQ, EQ_EQUAL,
@@ -25,7 +29,7 @@ enum class TokenType {
   
   IDENTIFIER, STRING, NUMBER,
   
-  KEY_LET, KEY_IF, KEY_ELSE, KEY_WHILE, KEY_FUNC, KEY_RETURN,
+  KEY_LET, KEY_IF, KEY_ELSE, KEY_WHILE, KEY_FUNC, KEY_RETURN, KEY_DO,
   
   SEMI
 };
@@ -192,6 +196,7 @@ class Lexer {
       case 'l': return checkKeyword(1, 2, "et", TokenType::KEY_LET);
       case 'r': return checkKeyword(1, 5, "eturn", TokenType::KEY_RETURN);
       case 'w': return checkKeyword(1, 4, "hile", TokenType::KEY_WHILE);
+      case 'd': return checkKeyword(1, 1, "do", TokenType::KEY_DO);
     }
     
     return TokenType::IDENTIFIER;
@@ -251,6 +256,12 @@ public:
         match('=') ? TokenType::SLASH_EQ : TokenType::SLASH);
       case '*': return makeToken(
         match('=') ? TokenType::STAR_EQ  : TokenType::STAR);
+      case '^': return makeToken(
+        match('=') ? TokenType::CAR_EQU : TokenType::CAR);
+      case '&': return makeToken(
+        match('=') ? TokenType::AMP_EQU : TokenType::AMP);
+      case '|': return makeToken(
+        match('=') ? TokenType::PIP_EQU : TokenType::PIP);
       case '"':
         return string();
       
