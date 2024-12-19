@@ -135,7 +135,7 @@ class Compiler {
         
         return type;
       case TokenType::EX:
-        emitPair(OPCODE_NOT, LOWER(type));
+        emitPair(OPCODE_NOT, type);
         return type;
     }
     
@@ -147,16 +147,52 @@ class Compiler {
     byte type = _type_in; // Same as above;
     switch (op) {
       case TokenType::PLUS:
-        emitPair(OPCODE_ADD, type);
+        emitPair(OPCODE_ADD , type);
         return type;
       case TokenType::MINUS:
-        emitPair(OPCODE_SUB, type);
+        emitPair(OPCODE_SUB , type);
         return type;
       case TokenType::STAR:
-        emitPair(OPCODE_MUL, type);
+        emitPair(OPCODE_MUL , type);
         return type;
       case TokenType::SLASH:
-        emitPair(OPCODE_DIV, type);
+        emitPair(OPCODE_DIV , type);
+        return type;
+      case TokenType::CAR:
+        emitPair(OPCODE_XOR , type);
+        return type;
+      case TokenType::AMP:
+        emitPair(OPCODE_AND , type);
+        return type;
+      case TokenType::PIP:
+        emitPair(OPCODE_OR  , type);
+        return type;
+      case TokenType::EQ_EQUAL:
+        emitPair(OPCODE_CMPE, type);
+        type = MERGE(TYPE_UNSIGNED, FROM_SIZE(8));
+        return type;
+      case TokenType::EX_EQUAL:
+        emitPair(OPCODE_CMPE, type);
+        type = MERGE(TYPE_UNSIGNED, FROM_SIZE(8));
+        emitPair(OPCODE_NOT , type);
+        return type;
+      case TokenType::GT:
+        emitPair(OPCODE_CMPG, type);
+        type = MERGE(TYPE_UNSIGNED, FROM_SIZE(8));
+        return type;
+      case TokenType::LT_EQUAL:
+        emitPair(OPCODE_CMPG, type);
+        type = MERGE(TYPE_UNSIGNED, FROM_SIZE(8));
+        emitPair(OPCODE_NOT , type);
+        return type;
+      case TokenType::LT:
+        emitPair(OPCODE_CMPL, type);
+        type = MERGE(TYPE_UNSIGNED, FROM_SIZE(8));
+        return type;
+      case TokenType::GT_EQUAL:
+        emitPair(OPCODE_CMPL, type);
+        type = MERGE(TYPE_UNSIGNED, FROM_SIZE(8));
+        emitPair(OPCODE_NOT , type);
         return type;
     }
     return type;
