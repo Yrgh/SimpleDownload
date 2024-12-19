@@ -2,7 +2,7 @@
 #define _VM_CPP_
 
 #ifndef MAX_STACK_SIZE
-#define MAX_STACK_SIZE 512
+#define MAX_STACK_SIZE 256
 #endif
 
 #include <stdint.h>
@@ -44,7 +44,7 @@ enum : byte { // If no register is specified, assume left
   OPCODE_CONV, // Convert left from type to type
   
   OPCODE_JMP, // Sets the program counter
-  OPCODE_JMPZ, // Jumps if register is zero
+  OPCODE_JMPNZ, // JMP if (uint8_t(register) & 1 != 0)
   
   OPCODE_CMPE, // Register = 0 if left == right for a given type
   OPCODE_CMPL, // Register = 0 if left > right for a given type
@@ -65,6 +65,7 @@ enum : byte { // If no register is specified, assume left
   OPCODE_FCEIL,
   OPCODE_FTRIG, // Like SPECCALL, but for trig functions
   
+  // The following expect a size parameter
   OPCODE_AND, // Bitwise AND
   OPCODE_OR,  // Bitwise OR
   OPCODE_XOR, // Bitwise XOR
@@ -106,8 +107,14 @@ constexpr byte best_type(byte a, byte b) {
   return UPPER(a) > UPPER(b) ? a : (UPPER(b) > UPPER(a) ? b : MERGE(UPPER(a), max(LOWER(a), LOWER(b))));
 }
 
+static void swap_u64(uint64_t *a, uint64_t *b) {
+  uint64_t t = *a;
+  *a = *b;
+  *b = t;
+}
+
 struct VM {
-  byte *instructions = nullptr;
+  const byte *instructions = nullptr;
   int instructions_size = 0;
   int prog_counter = 0;
   byte registers[8*2] = {};
@@ -142,99 +149,120 @@ struct VM {
       })
       
       SWITCH_CASE(OPCODE_SWAP, {
-        uint64_t left = *(uint64_t *) registers;
-        *(uint64_t *) registers = *(uint64_t *) (registers + 8);
-        *(uint64_t *) (registers + 8) = left;
+        swap_u64(
+          (uint64_t *) registers,
+          (uint64_t *) (registers + 8)
+        );
       })
       
-      #define APPLY_OP(type, op) \
+      #define APPLY_OPB(type, op) \
       do { \
         *(type *) registers op##= *(type *) (registers + 8); \
         break; \
-      } while(false) \
+      } while(false)
       
-      #define OP_CASE(name, op) \
+      #define APPLY_OPU(type, op) \
+      do { \
+        *(type *) registers = op (*(type *) registers); \
+        break; \
+      } while(false)
+      
+      #define APPLY_OPC(type, op) \
+      do { \
+        *(uint8_t *) registers = \
+          (*(type *) registers) op \
+          (*(type *) (registers + 8)); \
+        break; \
+      } while(false)
+      
+      #define OP_CASE(name, op, ub) \
       SWITCH_CASE(OPCODE_##name, { \
         switch (*GET_BYTES(1)) { \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(8)): \
-            APPLY_OP(uint8_t , op); \
+            APPLY_OP##ub(uint8_t , op); \
             break; \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(16)): \
-            APPLY_OP(uint16_t, op); \
+            APPLY_OP##ub(uint16_t, op); \
             break; \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(32)): \
-            APPLY_OP(int32_t, op); \
+            APPLY_OP##ub(uint32_t, op); \
             break; \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(64)): \
-            APPLY_OP(uint64_t, op); \
+            APPLY_OP##ub(uint64_t, op); \
             break; \
           case MERGE(TYPE_SIGNED, FROM_SIZE(8)): \
-            APPLY_OP( int8_t , op); \
+            APPLY_OP##ub( int8_t , op); \
             break; \
           case MERGE(TYPE_SIGNED, FROM_SIZE(16)): \
-            APPLY_OP( int16_t, op); \
+            APPLY_OP##ub( int16_t, op); \
             break; \
           case MERGE(TYPE_SIGNED, FROM_SIZE(32)): \
-            APPLY_OP( int32_t, op); \
+            APPLY_OP##ub( int32_t, op); \
             break; \
           case MERGE(TYPE_SIGNED, FROM_SIZE(64)): \
-            APPLY_OP( int64_t, op); \
+            APPLY_OP##ub( int64_t, op); \
             break; \
           case MERGE(TYPE_FLOAT, FROM_SIZE(32)): \
-            APPLY_OP(float, op); \
+            APPLY_OP##ub(float, op); \
             break; \
           case MERGE(TYPE_FLOAT, FROM_SIZE(64)): \
-            APPLY_OP(double, op); \
+            APPLY_OP##ub(double, op); \
             break; \
         } \
       })
       
-      OP_CASE(ADD, +)
-      OP_CASE(SUB, -)
-      OP_CASE(MUL, *)
-      OP_CASE(DIV, /)
+      OP_CASE(ADD, +, B)
+      OP_CASE(SUB, -, B)
+      OP_CASE(MUL, *, B)
+      OP_CASE(DIV, /, B)
       
-      #undef APPLY_OP
-      #define APPLY_OP(type) \
-      do { \
-        *(type *) registers = - (*(type *) registers); \
-        break; \
-      } while(false) \
+      OP_CASE(NEG, -, U)
       
-      SWITCH_CASE(OPCODE_NEG, { \
+      OP_CASE(CMPE, ==, C)
+      OP_CASE(CMPL, < , C)
+      OP_CASE(CMPG, > , C)
+      
+      #undef OP_CASE
+      #define OP_CASE(name, op, ub) \
+      SWITCH_CASE(OPCODE_##name, { \
         switch (*GET_BYTES(1)) { \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(8)): \
-            APPLY_OP(uint8_t); \
+            APPLY_OP##ub(uint8_t , op); \
             break; \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(16)): \
-            APPLY_OP(uint16_t); \
+            APPLY_OP##ub(uint16_t, op); \
             break; \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(32)): \
-            APPLY_OP(int32_t); \
+            APPLY_OP##ub(uint32_t, op); \
             break; \
           case MERGE(TYPE_UNSIGNED, FROM_SIZE(64)): \
-            APPLY_OP(uint64_t); \
+            APPLY_OP##ub(uint64_t, op); \
             break; \
           case MERGE(TYPE_SIGNED, FROM_SIZE(8)): \
-            APPLY_OP( int8_t); \
+            APPLY_OP##ub(uint8_t , op); \
             break; \
           case MERGE(TYPE_SIGNED, FROM_SIZE(16)): \
-            APPLY_OP( int16_t); \
+            APPLY_OP##ub(uint16_t, op); \
             break; \
           case MERGE(TYPE_SIGNED, FROM_SIZE(32)): \
-            APPLY_OP( int32_t); \
+            APPLY_OP##ub(uint32_t, op); \
             break; \
           case MERGE(TYPE_SIGNED, FROM_SIZE(64)): \
-            APPLY_OP( int64_t); \
+            APPLY_OP##ub(uint64_t, op); \
             break; \
           case MERGE(TYPE_FLOAT, FROM_SIZE(32)): \
-            APPLY_OP(float); \
+            APPLY_OP##ub(uint32_t, op); \
             break; \
           case MERGE(TYPE_FLOAT, FROM_SIZE(64)): \
-            APPLY_OP(double); \
+            APPLY_OP##ub(uint64_t, op); \
             break; \
         } \
       })
+      
+      OP_CASE(XOR, ^, B)
+      OP_CASE(AND, &, B)
+      OP_CASE(OR , |, B)
+      OP_CASE(NOT, ~, U)
       
       SWITCH_CASE(OPCODE_RETURN, {
         pop(&prog_counter, 4);
@@ -250,12 +278,12 @@ struct VM {
       
       SWITCH_CASE(OPCODE_PUSH, {
         byte reg = *GET_BYTES(1);
-        push(registers + UPPER(reg), LOWER(reg));
+        push(registers + UPPER(reg), 1 << LOWER(reg));
       })
       
       SWITCH_CASE(OPCODE_POP, {
         byte reg = *GET_BYTES(1);
-        pop(registers + UPPER(reg), LOWER(reg));
+        pop(registers + UPPER(reg), 1 << LOWER(reg));
       })
       
       SWITCH_CASE(OPCODE_LOAD, {
@@ -281,6 +309,15 @@ struct VM {
       SWITCH_CASE(OPCODE_JMP, {
         prog_counter = *(int32_t *) GET_BYTES(4);
       })
+      
+      SWITCH_CASE(OPCODE_JMPNZ, {
+        // If 0b11111110 (not true) , then no
+        // If 0b00000000 (false)    , then no
+        // If 0b00000001 (true)     , then yes
+        // If 0b11111111 (not false), then yes
+        if ((*(uint8_t *) registers) & 1) return;
+        prog_counter = *(int32_t *) GET_BYTES(4);
+      })
     }
   }
   
@@ -300,7 +337,8 @@ struct VM {
     stack_frame = 0;
   }
   #undef GET_BYTES
-  #undef APPLY_OP
+  #undef APPLY_OPU
+  #undef APPLY_OPB
   #undef OP_CASE
 };
 
