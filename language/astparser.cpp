@@ -27,6 +27,39 @@ static void printOp(TokenType op) {
     case TokenType::EX:
       printf("!");
       break;
+    case TokenType::EQ:
+      printf("=");
+      break;
+    case TokenType::EQ_EQUAL:
+      printf("==");
+      break;
+    case TokenType::EX_EQUAL:
+      printf("!=");
+      break;
+    case TokenType::GT:
+      printf(">");
+      break;
+    case TokenType::GT_EQUAL:
+      printf(">=");
+      break;
+    case TokenType::LT:
+      printf("<");
+      break;
+    case TokenType::LT_EQUAL:
+      printf("<=");
+      break;
+    case TokenType::CAR:
+      printf("^");
+      break;
+    case TokenType::AMP:
+      printf("&");
+      break;
+    case TokenType::PIP:
+      printf("|");
+      break;
+    case TokenType::DOT:
+      printf(".");
+      break;
     default:
       printf("??: %d", (int) op);
   }
@@ -110,12 +143,30 @@ class Parser {
   
   int getPrec(TokenType type) {
     switch (type) {
+      case TokenType::COMMA:
+        return 0;
+      case TokenType::PIP:
+        return 1;
+      case TokenType::CAR:
+        return 2;
+      case TokenType::AMP:
+        return 3;
+      case TokenType::EQ_EQUAL:
+      case TokenType::EX_EQUAL:
+        return 4;
+      case TokenType::GT:
+      case TokenType::LT:
+      case TokenType::GT_EQUAL:
+      case TokenType::LT_EQUAL:
+        return 5;
       case TokenType::PLUS:
       case TokenType::MINUS:
-        return 1;
+        return 6;
       case TokenType::STAR:
       case TokenType::SLASH:
-        return 2;
+        return 7;
+      case TokenType::DOT:
+        return 8;
     }
     return -1;
   }
