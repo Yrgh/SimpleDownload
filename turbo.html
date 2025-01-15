@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proxy Website Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #result {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Proxy Website Viewer</h1>
+  <p>Enter a URL to load its content below:</p>
+  <form id="proxyForm">
+    <input type="url" id="urlInput" placeholder="Enter a URL" required style="width: 300px;">
+    <button type="submit">Load Website</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const proxyForm = document.getElementById('proxyForm');
+    const urlInput = document.getElementById('urlInput');
+    const resultDiv = document.getElementById('result');
+
+    proxyForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const targetUrl = urlInput.value;
+      resultDiv.innerHTML = '<p>Loading...</p>';
+
+      try {
+        // Fetch the content from the proxy server
+        const response = await fetch(`${encodeURIComponent(targetUrl)}`);
+        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+
+        const content = await response.text();
+        // Display the fetched content
+        resultDiv.innerHTML = content;
+      } catch (error) {
+        console.error('Error fetching content:', error);
+        resultDiv.innerHTML = `<p>Failed to load content: ${error.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
