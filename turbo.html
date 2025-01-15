@@ -41,13 +41,11 @@
     const consoleLogOriginal = console.log;
     console.log = function (...args) {
       consoleDiv.innerHTML += `<p>${args.join("<br>")}</p><br>`;
-      consoleLogOrginal.apply(console, ...args);
     };
 
     const consoleErrOriginal = console.error;
     console.error = function (...args) {
       consoleDiv.innerHTML += `<p class="error">${args.join("<br>")}</p><br>`;
-      consoleErrOrginal.apply(console, ...args);
     };
 
     proxyForm.addEventListener('submit', async (e) => {
@@ -65,7 +63,7 @@
         // Display the fetched content
         resultDiv.innerHTML = content;
       } catch (error) {
-        console.log('Error fetching content:', error);
+        console.error('Error fetching content:', error);
       }
     });
   </script>
