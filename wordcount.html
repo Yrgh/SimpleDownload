@@ -58,9 +58,9 @@
 
         let remainString;
         if (has < min) {
-          remainString = `You need ${min - has} more words to enter leeway`;
+          remainString = `You need ${min - has} more words to enter leeway (${min})`;
         } else if (has > max) {
-          remainString = `You are ${has - max} words above leeway`;
+          remainString = `You are ${has - max} words above leeway (${max})`;
         } else if (has < needs) {
           remainString = `You need ${needs - has} more words to hit the sweet spot`;
         } else {
