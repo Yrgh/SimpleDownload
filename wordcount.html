@@ -40,16 +40,20 @@
       function onChange() {
         exEl.setAttribute("max", wcEl.value);
         
-        const needs = reqEl.value;
-        const leeway = Math.floor(0.01 * leewayEl.value * needs);
+        const needs = parseInt(reqEl.value);
+        const leewayVal = parseInt(leewayEl.value);
+        const leeway = Math.floor(0.01 * leewayVal * needs);
         const min = needs - leeway;
         const max = needs + leeway;
 
-        if (exEl.value > wcEl.value) {
-          exEl.value = wcEl.value;
+        const exVal = parseInt(exEl.value);
+        const wcVal = parseInt(wcEl.value);
+
+        if (exVal > wcVal) {
+          exEl.value = wcVal;
         }
         
-        const has = wcEl.value - exEl.value;
+        const has = wcVal - exVal;
 				
       	const percent = numberToPercent(has/needs, 0);
 
@@ -57,22 +61,26 @@
         if (has < min) {
           remainString = `You need ${min - has} more words to enter leeway`;
         } else if (has > max) {
-          remainString = `You are ${has - max} words to above leeway`;
+          remainString = `You are ${has - max} words above leeway`;
         } else if (has < needs) {
           remainString = `You need ${needs - has} more words to hit the sweet spot`;
         } else {
           remainString = `You are in the sweet spot!`;
         }
-				
-        outputEl.innerHTML = `+/- ${leeway} words<br>${has}/${needs}<br>${percent}<br>${remainString}`;
+		
+        outputEl.innerHTML = `${has}/${needs}<br>${percent}<br>${remainString}`;
       }
 
       wcEl.addEventListener("change", onChange);
       reqEl.addEventListener("change", onChange);
       exEl.addEventListener("change", onChange);
       leewayEl.addEventListener("change", onChange);
-
-      onChange();
+			
+			try {
+      	onChange();
+			} catch (e) {
+				outputEl.innerHTML = `${e}`;
+			}
     </script>
   </body>
 </html>
