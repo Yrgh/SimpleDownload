@@ -4,20 +4,27 @@
     <title>Word count helper</title>
   </head>
   <body>
+    <label for="requirement">Necessary:</label>
+    <input type="number" id="requirement" name=="requirement">
+    
     <label for="wordcount">Word count:</label>
     <input type="number" id="wordcount" name=="wordcount">
 
     <p id="output"></p>
     
     <script>
-      const inputEl = document.getElementById("wordcount");
+      const wcEl = document.getElementById("wordcount");
+      const reqEl = document.getElementById("requirement");
       const outputEl = document.getElementById("output");
 
       function onChange() {
-        outputEl.innerHTML = "haha";
+        const has = wcEl.value;
+        const needs = wcEl.value;
+        outputEl.innerHTML = `${has}/${needs}`;
       }
 
-      inputEl.addEventListener("change", onChange);
+      wcEl.addEventListener("change", onChange);
+      reqEl.addEventListener("change", onChange);
     </script>
   </body>
 </html>
