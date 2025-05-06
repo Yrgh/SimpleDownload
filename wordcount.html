@@ -41,7 +41,7 @@
         exEl.setAttribute("max", wcEl.value);
         
         const needs = reqEl.value;
-        const leeway = Math.floor(leewayEl.value * needs);
+        const leeway = Math.floor(0.01 * leewayEl.value * needs);
         const min = needs - leeway;
         const max = needs + leeway;
 
