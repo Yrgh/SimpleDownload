@@ -5,47 +5,72 @@
   </head>
   <body>
     <label for="requirement">Necessary:</label>
-    <input type="number" id="requirement" name="requirement">
-		
-		<br> <br>
+    <input type="number" id="requirement" name="requirement" min="10" value="100">
+
+    <label for="leeway">Leeway:</label>
+    <input type="number" id="leeway" name="leeway" min="0" max="50" value="10">
+    
+    <br> <br>
     
     <label for="wordcount">Word count:</label>
-    <input type="number" id="wordcount" name="wordcount">
+    <input type="number" id="wordcount" min="0" value="0" name="wordcount">
 		
-		<br> <br>
+    <br> <br>
     
     <label for="exclude">Exclude:</label>
-    <input type="number" id="exclude" name="exclude">
+    <input type="number" id="exclude" min="0" value="0" name="exclude">
 
     <p id="output"></p>
     
     <script>
       const wcEl = document.getElementById("wordcount");
-			const exEl = document.getElementById("exclude");
+      const exEl = document.getElementById("exclude");
       const reqEl = document.getElementById("requirement");
+      const leewayEl = document.getElementById("leeway");
       const outputEl = document.getElementById("output");
 			
-			function numberToPercent(number, fractionDigits = 0) {
-				return new Intl.NumberFormat('default', {
-					style: 'percent',
-					minimumFractionDigits: fractionDigits,
-					maximumFractionDigits: fractionDigits,
-				}).format(number);
-			}
+      function numberToPercent(number, fractionDigits = 0) {
+      	return new Intl.NumberFormat('default', {
+      	  style: 'percent',
+      	  minimumFractionDigits: fractionDigits,
+      	  maximumFractionDigits: fractionDigits,
+      	}).format(number);
+      }
 
       function onChange() {
-        const has = wcEl.value - exEl.value;
+        exEl.setAttribute("max", wcEl.value);
+        
         const needs = reqEl.value;
+        const leeway = 0.01 * leewayEl.value;
+        const min = needs - leeway;
+        const max = needs + leeway;
+
+        if (exEl.value > wcEl.value) {
+          exEl.value = wcEl.value;
+        }
+        
+        const has = wcEl.value - exEl.value;
 				
-				const percent = numberToPercent(has/needs, 0);
-				const remain = `${needs-has}`;
+      	const percent = numberToPercent(has/needs, 0);
+
+        let remainString;
+        if (has < min) {
+          remainString = `You need ${min - has} more words to enter leeway`;
+        } else if (has > max) {
+          remainString = `You are ${has - max} words to above leeway`;
+        } else if (has < needs) {
+          remainString = `You need ${needs - has} more words to hit the sweet spot`;
+        } else {
+          remainString = `You are in the sweet spot!`;
+        }
 				
-        outputEl.innerHTML = `${has}/${needs}<br>${percent}<br>You need ${remain} more words`;
+        outputEl.innerHTML = `${has}/${needs}<br>${percent}<br>${remainString}`;
       }
 
       wcEl.addEventListener("change", onChange);
       reqEl.addEventListener("change", onChange);
-			exEl.addEventListener("change", onChange);
+      exEl.addEventListener("change", onChange);
+      leewayEl.addEventListener("change", onChange);
     </script>
   </body>
 </html>
