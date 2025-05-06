@@ -64,7 +64,7 @@
           remainString = `You are in the sweet spot!`;
         }
 				
-        outputEl.innerHTML = `${has}/${needs}<br>${percent}<br>${remainString}`;
+        outputEl.innerHTML = `+/- ${leeway} words<br>${has}/${needs}<br>${percent}<br>${remainString}`;
       }
 
       wcEl.addEventListener("change", onChange);
