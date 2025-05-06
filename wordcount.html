@@ -14,8 +14,6 @@
     
     <label for="wordcount">Word count:</label>
     <input type="number" id="wordcount" min="0" value="0" name="wordcount">
-		
-    <br> <br>
     
     <label for="exclude">Exclude:</label>
     <input type="number" id="exclude" min="0" value="0" name="exclude">
@@ -46,11 +44,12 @@
         const min = needs - leeway;
         const max = needs + leeway;
 
-        const exVal = parseInt(exEl.value);
+        let exVal = parseInt(exEl.value);
         const wcVal = parseInt(wcEl.value);
 
         if (exVal > wcVal) {
           exEl.value = wcVal;
+          exVal = wcVal;
         }
         
         const has = wcVal - exVal;
