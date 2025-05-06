@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Word count helper</title>
+  </head>
+  <body>
+    <label for="wordcount">Word count:</label>
+    <input type="number" id="wordcount" name=="wordcount">
+
+    <p id="output"></p>
+    
+    <script>
+      const inputEl = document.getElementById("wordcount");
+      const outputEl = document.getElementById("output");
+
+      function onChange() {
+        outputEl.innerHTML = "haha";
+      }
+
+      inputEl.addEventListener("change", onChange);
+    </script>
+  </body>
+</html>
