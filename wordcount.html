@@ -5,26 +5,47 @@
   </head>
   <body>
     <label for="requirement">Necessary:</label>
-    <input type="number" id="requirement" name=="requirement">
+    <input type="number" id="requirement" name="requirement">
+		
+		<br> <br>
     
     <label for="wordcount">Word count:</label>
-    <input type="number" id="wordcount" name=="wordcount">
+    <input type="number" id="wordcount" name="wordcount">
+		
+		<br> <br>
+    
+    <label for="exclude">Exclude:</label>
+    <input type="number" id="exclude" name="exclude">
 
     <p id="output"></p>
     
     <script>
       const wcEl = document.getElementById("wordcount");
+			const exEl = document.getElementById("exclude");
       const reqEl = document.getElementById("requirement");
       const outputEl = document.getElementById("output");
+			
+			function numberToPercent(number, fractionDigits = 0) {
+				return new Intl.NumberFormat('default', {
+					style: 'percent',
+					minimumFractionDigits: fractionDigits,
+					maximumFractionDigits: fractionDigits,
+				}).format(number);
+			}
 
       function onChange() {
-        const has = wcEl.value;
-        const needs = wcEl.value;
-        outputEl.innerHTML = `${has}/${needs}`;
+        const has = wcEl.value - exEl.value;
+        const needs = reqEl.value;
+				
+				const percent = numberToPercent(has/needs, 0);
+				const remain = `${needs-has}`;
+				
+        outputEl.innerHTML = `${has}/${needs}<br>${percent}<br>You need ${remain} more words`;
       }
 
       wcEl.addEventListener("change", onChange);
       reqEl.addEventListener("change", onChange);
+			exEl.addEventListener("change", onChange);
     </script>
   </body>
 </html>
